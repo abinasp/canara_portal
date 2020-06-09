@@ -572,7 +572,7 @@ class Dashboard extends React.Component{
               <MUIDataTable
                 title="Translators List"
                 data={arr}
-                columns={['Name', 'Username', 'Created At', 'Edit', 'Delete']}
+                columns={['Name', 'Username', 'Created On', 'Edit', 'Delete']}
                 options={{
                   filter: false,
                   print: false,
