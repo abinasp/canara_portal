@@ -1,56 +1,87 @@
-import React from "react";
-import {
-  Table,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-} from "@material-ui/core";
+import React from 'react';
+import { withStyles } from '@material-ui/core/styles';
+import IconButton from '@material-ui/core/IconButton';
+import FirstPageIcon from '@material-ui/icons/FirstPage';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import LastPageIcon from '@material-ui/icons/LastPage';
 
-// components
-import { Button } from "../../../../components/Wrappers";
+const actionsStyles = theme => ({
+  root: {
+    flexShrink: 0,
+    color: theme.palette.text.secondary,
+    marginLeft: theme.spacing.unit * 2.5,
+  },
+});
 
-const states = {
-  sent: "success",
-  pending: "warning",
-  declined: "secondary",
-};
 
-export default function TableComponent({ data }) {
-  var keys = Object.keys(data[0]).map(i => i.toUpperCase());
-  keys.shift(); // delete "id" key
+class TablePaginationAction extends React.Component{
 
-  return (
-    <Table className="mb-0">
-      <TableHead>
-        <TableRow>
-          {keys.map(key => (
-            <TableCell key={key}>{key}</TableCell>
-          ))}
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {data.map(({ id, name, email, product, price, date, city, status }) => (
-          <TableRow key={id}>
-            <TableCell className="pl-3 fw-normal">{name}</TableCell>
-            <TableCell>{email}</TableCell>
-            <TableCell>{product}</TableCell>
-            <TableCell>{price}</TableCell>
-            <TableCell>{date}</TableCell>
-            <TableCell>{city}</TableCell>
-            <TableCell>
-              <Button
-                color={states[status.toLowerCase()]}
-                size="small"
-                className="px-2"
-                variant="contained"
-              >
-                {status}
-              </Button>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  );
+  handleFirstPageButtonClick = event => {
+    const { onChangePage } = this.props;
+    onChangePage(event, 0);
+  };
+
+  handleBackButtonClick = event => {
+    const { onChangePage, page } = this.props;
+    onChangePage(event, page - 1);
+  };
+
+  handleNextButtonClick = event => {
+    const { onChangePage, page } = this.props;
+    onChangePage(event, page + 1);
+  };
+
+  handleLastPageButtonClick = event => {
+    const { onChangePage, count, rowsPerPage } = this.props;
+    onChangePage(
+      event,
+      Math.max(0, Math.ceil(count / rowsPerPage) - 1),
+    );
+  };
+
+  render() {
+    const {
+      classes,
+      count,
+      page,
+      rowsPerPage,
+      theme
+    } = this.props;
+
+    return (
+      <div className={classes.root}>
+        <IconButton
+          onClick={this.handleFirstPageButtonClick}
+          disabled={page === 0}
+          aria-label="First Page"
+        >
+          {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
+        </IconButton>
+        <IconButton
+          onClick={this.handleBackButtonClick}
+          disabled={page === 0}
+          aria-label="Previous Page"
+        >
+          {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+        </IconButton>
+        <IconButton
+          onClick={this.handleNextButtonClick}
+          disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+          aria-label="Next Page"
+        >
+          {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+        </IconButton>
+        <IconButton
+          onClick={this.handleLastPageButtonClick}
+          disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+          aria-label="Last Page"
+        >
+          {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
+        </IconButton>
+      </div>
+    );
+  }
 }
+
+export default withStyles(actionsStyles, { withTheme: true })(TablePaginationAction);

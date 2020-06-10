@@ -1,13 +1,28 @@
 import React from 'react';
 
-import { Grid } from '@material-ui/core';
+import { 
+  Grid,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableFooter,
+  TablePagination,
+  Paper,
+  TableHead,
+  TableRow,
+  TextField,
+  Button
+} from '@material-ui/core';
 
 import { connect } from 'react-redux';
+import classNames from 'classnames';
 
 import { withStyles } from '@material-ui/core/styles';
 
 import TranslatorDashboardStyle from '../styles';
 import authReducer from '../../../redux/modules/auth';
+import TablePaginationsAction from '../components/Table/Table';
 
 const dummy = [
   {
@@ -79,9 +94,13 @@ class TranslatorDashboard  extends React.Component{
   constructor(props){
     super(props);
     this.state={
-      unModeratedStrings: []
+      unModeratedStrings: [],
+      page: 0,
+      rowsPerPage: 5
     }
     this.initSwalekh = this.initSwalekh.bind(this);
+    this.handleChangePage = this.handleChangePage.bind(this);
+    this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
   }
 
   componentDidMount(){
@@ -94,22 +113,27 @@ class TranslatorDashboard  extends React.Component{
     }
   }
 
-  handleStringChange(e,i){
+  handleChangePage(e,page){
+    if(!page) return;
+    this.setState({ page });
+  }
+
+  handleChangeRowsPerPage(e){
+    if(e && e.target){
+      const { value } = e.target;
+      this.setState({ rowsPerPage: value });
+    }
+  }
+
+  handleChangeTarget(e,i){
     const newState = Object.assign({}, this.state);
     newState.unModeratedStrings[i].target = e.target.value;
     this.setState({ state: newState });
-    // console.log(e.target.value,i)
-    // this.setState(prevState=> ({
-    //   unModeratedStrings:{
-    //     ...prevState.unModeratedStrings,
-    //     [prevState.unModeratedStrings[i].target]: e.target.value
-    //   }
-    // }))
   }
 
-  handleStringSave(i){
-    let updatedTarget = this.state.unModeratedStrings[i];
-    console.log(updatedTarget)
+  onTargetSave(i){
+    const { unModeratedStrings } = this.state;
+    console.log(unModeratedStrings[i]);
   }
 
   initSwalekh(i){
@@ -132,10 +156,57 @@ class TranslatorDashboard  extends React.Component{
 
   render(){
     const { classes, theme, user } = this.props;
-    const { unModeratedStrings } =this.state;
+    const { unModeratedStrings, page, rowsPerPage } =this.state;
+    console.log(unModeratedStrings)
     return(
       <>
-        <Grid item xs={12}></Grid>
+        <Grid item xs={12}>
+          <Table style={{ marginTop: '-10px' }}>
+            <TableHead>
+              <TableRow>
+                <TableCell padding="default" align="center" style={{ color: '#4581A8'}}>Domain</TableCell>
+                <TableCell padding="default" align="center" style={{ color: '#4581A8'}}>Source String</TableCell>
+                <TableCell padding="default" align="center" style={{ color: '#4581A8'}}>Target String</TableCell>
+                <TableCell padding="default" align="center" style={{ color: '#4581A8'}}>Target Language</TableCell>
+                <TableCell padding="default" align="center" style={{ color: '#4581A8'}}>Action</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {unModeratedStrings && unModeratedStrings.map((s,i)=>(
+                <TableRow key={i}>
+                  <TableCell padding="default" align="center">{s.apikey}</TableCell>
+                  <TableCell padding="default" align="center">{s.source}</TableCell>
+                  <TableCell padding="default" align="center">
+                    <TextField 
+                      id={`target_${i}`}
+                      value={s.target}
+                      style={{ width: '100%'}}
+                      onChange={(e)=>this.handleChangeTarget(e,i)}
+                      onFocus={()=>this.initSwalekh(i)}
+                    />
+                  </TableCell>
+                  <TableCell padding="default" align="center">{s.targetLanguage}</TableCell>
+                  <TableCell padding="default" align="center">
+                    <Button color="primary" variant="contained" onClick={()=>this.onTargetSave(i)} >Save</Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TablePagination 
+                  rowsPerPageOptions={[5,10,25,50,100]}
+                  count={unModeratedStrings.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onChangePage={this.handleChangePage}
+                  onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                  ActionsComponent={TablePaginationsAction}
+                />
+              </TableRow>
+            </TableFooter>
+          </Table>
+        </Grid>
       </>
     )
   }

@@ -1,3 +1,5 @@
+import { fade } from '@material-ui/core/styles/colorManipulator';
+
 const DashboardStyle = theme => ({
   card: {
     minHeight: "100%",
@@ -115,6 +117,33 @@ const DashboardStyle = theme => ({
     justifyContent: "space-between",
     marginBottom: theme.spacing(4),
     marginTop: theme.spacing(5),
+  },
+
+  //Table Style
+  table: {
+    minWidth: 860,
+  },
+  stripped: {
+    '& tbody tr:nth-child(even)': {
+      background: theme.palette.type === 'dark' ? fade(theme.palette.grey[900], 0.5) : theme.palette.grey[50]
+    }
+  },
+  bordered: {
+    border: theme.palette.type === 'dark' ? `1px solid ${theme.palette.grey[900]}` : `1px solid ${theme.palette.primary.light}`,
+    '& thead tr': {
+      background: theme.palette.type === 'dark' ? theme.palette.grey[900] : theme.palette.primary.light
+    },
+    '& td, th': {
+      border: theme.palette.type === 'dark' ? `1px solid ${theme.palette.grey[900]}` : `1px solid ${theme.palette.primary.light}`
+    },
+    '& tr td, tr th': {
+      '&:first-child': {
+        borderLeft: 'none'
+      },
+      '&:last-child': {
+        borderRight: 'none'
+      }
+    }
   },
 });
 
