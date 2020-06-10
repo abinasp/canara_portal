@@ -36,7 +36,7 @@ module.exports = {
         return {auth: token, user: fetchUser};
     },
 
-    createUser: async function(name, username, password, role){
+    createUser: async function(name, username, password, role, languages){
         const conn = await dbc.dbConn();
         const fetchUser = await conn.collection("users").findOne({ username });
         if(fetchUser){
@@ -47,6 +47,7 @@ module.exports = {
             username,
             password: bcrypt.hashSync(password, 10),
             role,
+            languages,
             apikey: uuid(),
             createdAt: Date.now(),
             updateAt: Date.now()
@@ -78,9 +79,11 @@ module.exports = {
         if(!fetchUser){
             throw new Error("User doesn't exist");
         }
-        const fetchUsername = await conn.collection("users").findOne({ username: updatedUser.username });
-        if(fetchUsername){
-            throw new Error("Same username already exist");
+        if(fetchUser.username !== updatedUser.username){
+            const fetchUsername = await conn.collection("users").findOne({ username: updatedUser.username });
+            if(fetchUsername){
+                throw new Error("Same username already exist");
+            }
         }
         if(updatedUser.password){
             updatedUser.password = bcrypt.hashSync(updatedUser.password, 10)

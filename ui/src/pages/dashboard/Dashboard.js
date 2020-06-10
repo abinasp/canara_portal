@@ -14,7 +14,7 @@ import {
   DialogTitle,
   FormControlLabel
 } from "@material-ui/core";
-import moment from 'moment';
+import moment, { lang } from 'moment';
 import toastr from 'toastr';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -35,6 +35,7 @@ import {
   XAxis,
 } from "recharts";
 import MUIDataTable from "mui-datatables";
+
 // styles
 import DashboardStyle from "./styles";
 import CRUDUser from '../dashboard/components/crud/crud_user';
@@ -138,7 +139,8 @@ class Dashboard extends React.Component{
       username: '',
       password: '',
       selectedUser: '',
-      unModeratedStrings: []
+      unModeratedStrings: [],
+      languages: [],
     }
     this.handleUserChange = this.handleUserChange.bind(this);
     this.onCreateUser = this.onCreateUser.bind(this);
@@ -148,6 +150,7 @@ class Dashboard extends React.Component{
     this.onCloseModal = this.onCloseModal.bind(this);
     this.deleteUser = this.deleteUser.bind(this);
     this.initSwalekh = this.initSwalekh.bind(this);
+    this.handleLangChange = this.handleLangChange.bind(this);
   }
 
   componentDidMount(){
@@ -159,7 +162,7 @@ class Dashboard extends React.Component{
         }
       }
     });
-    this.setState({unModeratedStrings: unmoderatedStrings})
+    this.setState({unModeratedStrings: unmoderatedStrings });
   }
 
   componentWillReceiveProps(nextProps){
@@ -169,6 +172,15 @@ class Dashboard extends React.Component{
   }
   handleUserChange(e){
     this.setState({ [e.target.name] : e.target.value});
+  }
+
+  handleLangChange(value){
+    if(value && value.length > 0){
+      let langArr = value.map(v=>v.value);
+      this.setState({ languages: langArr });
+    }else{
+      this.setState({ languages: [] });
+    }
   }
 
   handleStringChange(e,i){
@@ -208,7 +220,7 @@ class Dashboard extends React.Component{
   }
 
   onCreateUser(){
-    const { name, username, password, role } = this.state;
+    const { name, username, password, role, languages } = this.state;
     if(!name.trim()){
       return toastr.warning('Name is required')
     }
@@ -218,29 +230,35 @@ class Dashboard extends React.Component{
     if(!password.trim()){
       return toastr.warning('Password is required');
     }
-    this.props.authReducer.createUser({name, username, password,role }).then((res)=>{
+    if(!languages || languages.length == 0){
+      return toastr.warning('Target language is required');
+    }
+    this.props.authReducer.createUser({name, username, password,role, languages }).then((res)=>{
       if(res && res.success){
         this.props.authReducer.getUserLists().then(()=>{
-          this.setState({ openUser: false, name: '', username: '', password: '' })
+          this.setState({ openUser: false, name: '', username: '', password: '', languages: [] })
         });
       }
     })
   }
 
   onEditSave(){
-    const { name, username, role, selectedUser } = this.state;
+    const { name, username, role, selectedUser, languages } = this.state;
     if(!name.trim()){
       return toastr.warning('Name is required')
     }
     if(!username.trim()){
       return toastr.warning('Username is required');
     }
+    if(!languages || languages.length === 0){
+      return toastr.warning('Languages are required');
+    }
     const { apikey } = selectedUser;
-    const updatedUser = { apikey, name, username };
+    const updatedUser = { apikey, name, username, languages };
     this.props.authReducer.updateUser({updatedUser}).then((res)=>{
       if(res && res.success){
         this.props.authReducer.getUserLists().then(()=>{
-          this.setState({ openUser: false, editUser: false, selectedUser: '', name: '', username: '', password: '' })
+          this.setState({ openUser: false, editUser: false, selectedUser: '', name: '', username: '', password: '', languages: [] })
         });
       }
     })
@@ -252,18 +270,18 @@ class Dashboard extends React.Component{
     this.props.authReducer.deleteUser({apikey}).then((res)=>{
       if(res && res.success){
         this.props.authReducer.getUserLists().then(()=>{
-          this.setState({ openUser: false, editUser: false, deleteuser: false, selectedUser: '', name: '', username: '', password: '' })
+          this.setState({ openUser: false, editUser: false, deleteuser: false, selectedUser: '', name: '', username: '', password: '', languages: [] })
         });
       }
     })
   }
 
   onCloseModal(){
-    this.setState({ openUser: false, editUser: false, deleteuser: false, selectedUser: '', name: '', username: '', password: '' })
+    this.setState({ openUser: false, editUser: false, deleteuser: false, selectedUser: '', name: '', username: '', password: '', languages: [] })
   }
 
   onEditUser(user){
-    this.setState({ name: user.name, username: user.username, password: '', selectedUser: user }, ()=>{
+    this.setState({ name: user.name, username: user.username, password: '', selectedUser: user, languages: user.languages ? user.languages : [] }, ()=>{
       this.setState({ editUser: true });
     })
   }
@@ -277,8 +295,7 @@ class Dashboard extends React.Component{
 
   render(){
     const { classes, theme, userLists, user } = this.props;
-    const { mainChartState, openUser, name, username, password, editUser,deleteuser, unModeratedStrings } =this.state;
-    console.log(this.state)
+    const { mainChartState, openUser, name, username, password, editUser,deleteuser, unModeratedStrings, languages } =this.state;
     let arr = userLists && userLists.map(u=>{
       return[
         u.name,
@@ -742,10 +759,12 @@ class Dashboard extends React.Component{
             handleInputChange={this.handleUserChange}
             handleModalChange={this.onCloseModal}
             handleSave={this.onCreateUser}
+            handleLangChange={this.handleLangChange}
             crudUser={{
               name,
               username,
-              password
+              password,
+              languages
             }}
           />
         )}
@@ -757,10 +776,12 @@ class Dashboard extends React.Component{
             handleInputChange={this.handleUserChange}
             handleModalChange={this.onCloseModal}
             handleSave={this.onEditSave}
+            handleLangChange={this.handleLangChange}
             crudUser={{
               name,
               username,
-              password
+              password,
+              languages
             }}
           />
         )}
@@ -772,10 +793,12 @@ class Dashboard extends React.Component{
             handleInputChange={this.handleUserChange}
             handleModalChange={this.onCloseModal}
             handleSave={this.deleteUser}
+            handleLangChange={this.handleLangChange}
             crudUser={{
               name,
               username,
-              password
+              password,
+              languages
             }}
           />
         )}

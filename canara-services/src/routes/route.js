@@ -50,11 +50,11 @@ router.post("/login", async(req,res)=>{
 
 router.post("/create-user", async (req,res) => {
     try{
-        const { name, username, password, role } = req.body;
+        const { name, username, password, role, languages } = req.body;
         res.json({
             success: true,
             message: 'User created successful',
-            data: await auth.createUser(name, username, password, role)
+            data: await auth.createUser(name, username, password, role, languages)
         });
     }catch(error){
         console.log(error);
