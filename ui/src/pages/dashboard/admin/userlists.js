@@ -3,12 +3,7 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import {
   Grid,
-  LinearProgress,
-  Select,
-  OutlinedInput,
-  MenuItem,
-  Button,
-  TextField
+  Button
 } from "@material-ui/core";
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
