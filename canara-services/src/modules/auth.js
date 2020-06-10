@@ -68,7 +68,7 @@ module.exports = {
                     password: 0
                 }
             }
-        ).toArray();
+        ).sort({"_id": -1}).toArray();
         return { userLists: fetchUsers};
     },
 
