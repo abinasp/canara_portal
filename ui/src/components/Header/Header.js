@@ -12,6 +12,8 @@ import history from '../../utils/history';
 
 // styles
 import useStyles from "./styles";
+import { connect } from "react-redux";
+import authReducer  from "../../redux/modules/auth";
 
 // components
 import { Badge, Typography, Button } from "../Wrappers/Wrappers";
@@ -19,11 +21,9 @@ import { Badge, Typography, Button } from "../Wrappers/Wrappers";
 import { useUserDispatch, signOut } from "../../context/UserContext";
 
 
-export default function Header(props) {
+function Header(props) {
   var classes = useStyles();
-
   var userDispatch = useUserDispatch();
-
   var [profileMenu, setProfileMenu] = useState(null);
 
   return (
@@ -53,7 +53,7 @@ export default function Header(props) {
         >
           <div className={classes.profileMenuUser}>
             <Typography variant="h4" weight="medium">
-              John Doe
+              {props.user && props.user.name ? props.user.name : 'Canara User'}
             </Typography>
             <Typography
               className={classes.profileMenuLink}
@@ -70,7 +70,7 @@ export default function Header(props) {
               color="primary"
               onClick={() => {
                 window.localStorage.clear();
-                history.push('/login');
+                history.push('#');
                 window.location.reload();
               }}
             >
@@ -82,3 +82,14 @@ export default function Header(props) {
     </AppBar>
   );
 }
+
+const HeaderConatiner = connect(
+  state => ({
+    user: state.get('auth').user
+  }),
+  dispatch => ({
+    authReducer: authReducer.getActions(dispatch)
+  })
+)(Header);
+
+export default HeaderConatiner;

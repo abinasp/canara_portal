@@ -22,13 +22,12 @@ import { useLayoutState } from "../../context/LayoutContext";
 
 function Layout(props) {
   var classes = useStyles();
-
   // global
   var layoutState = useLayoutState();
   return (
     <div className={classes.root}>
         <>
-          <Header history={props.history} />
+          <Header history={props.history} {...props}/>
           {/* <Sidebar /> */}
           <div
             className={classnames(classes.content, {

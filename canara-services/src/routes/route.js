@@ -103,7 +103,6 @@ router.put("/update-user", validToken.isValidToken(), async (req,res) => {
 
 router.post("/delete-user", validToken.isValidToken(), async (req,res) => {
     try{
-        console.log(req.body)
         const { apikey } = req.body;
         res.json({
             success: true,

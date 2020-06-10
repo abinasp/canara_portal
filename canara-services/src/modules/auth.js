@@ -93,7 +93,6 @@ module.exports = {
 
     deleteUser: async function(apikey){
         const conn = await dbc.dbConn();
-        console.log(apikey)
         if(!apikey){
             throw new Error("Invalid user");
         }

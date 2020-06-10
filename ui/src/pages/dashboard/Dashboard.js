@@ -11,7 +11,8 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle
+  DialogTitle,
+  FormControlLabel
 } from "@material-ui/core";
 import moment from 'moment';
 import toastr from 'toastr';
@@ -50,24 +51,70 @@ import BigStat from "./components/BigStat/BigStat";
 
 import authReducer  from "../../redux/modules/auth";
 
-const datatableData = [
-  ["Joe James", "Example Inc.", "Yonkers", "NY"],
-  ["John Walsh", "Example Inc.", "Hartford", "CT"],
-  ["Bob Herm", "Example Inc.", "Tampa", "FL"],
-  ["James Houston", "Example Inc.", "Dallas", "TX"],
-  ["Prabhakar Linwood", "Example Inc.", "Hartford", "CT"],
-  ["Kaui Ignace", "Example Inc.", "Yonkers", "NY"],
-  ["Esperanza Susanne", "Example Inc.", "Hartford", "CT"],
-  ["Christian Birgitte", "Example Inc.", "Tampa", "FL"],
-  ["Meral Elias", "Example Inc.", "Hartford", "CT"],
-  ["Deep Pau", "Example Inc.", "Yonkers", "NY"],
-  ["Sebastiana Hani", "Example Inc.", "Dallas", "TX"],
-  ["Marciano Oihana", "Example Inc.", "Yonkers", "NY"],
-  ["Brigid Ankur", "Example Inc.", "Dallas", "TX"],
-  ["Anna Siranush", "Example Inc.", "Yonkers", "NY"],
-  ["Avram Sylva", "Example Inc.", "Hartford", "CT"],
-  ["Serafima Babatunde", "Example Inc.", "Tampa", "FL"],
-  ["Gaston Festus", "Example Inc.", "Tampa", "FL"],
+const unmoderatedStrings = [
+  {
+    source: "Breakfast", 
+    target: "Breakfast", 
+    targetLanguage: "hindi", 
+    sourceLanguage: "english",
+    apikey: 'canara_bank_apikey'
+  },
+  {
+    source: "Lunch", 
+    target: "lunch", 
+    targetLanguage: "hindi", 
+    sourceLanguage: "english",
+    apikey: 'canara_bank_apikey'
+  },
+  {
+    source: "Dinner", 
+    target: "dinner", 
+    targetLanguage: "hindi", 
+    sourceLanguage: "english",
+    apikey: 'canara_bank_apikey'
+  },
+  {
+    source: "Monday", 
+    target: "Monday", 
+    targetLanguage: "hindi", 
+    sourceLanguage: "english",
+    apikey: 'canara_bank_apikey'
+  },
+  {
+    source: "Apple", 
+    target: "apple", 
+    targetLanguage: "hindi", 
+    sourceLanguage: "english",
+    apikey: 'canara_bank_apikey'
+  },
+  {
+    source: "Monday", 
+    target: "Monday", 
+    targetLanguage: "telugu", 
+    sourceLanguage: "english",
+    apikey: 'canara_bank_apikey'
+  },
+  {
+    source: "Apple", 
+    target: "apple", 
+    targetLanguage: "telugu", 
+    sourceLanguage: "english",
+    apikey: 'canara_bank_apikey'
+  },
+  {
+    source: "Monday", 
+    target: "Monday", 
+    targetLanguage: "telugu", 
+    sourceLanguage: "english",
+    apikey: 'canara_bank_apikey'
+  },
+  {
+    source: "Apple", 
+    target: "apple", 
+    targetLanguage: "telugu", 
+    sourceLanguage: "english",
+    apikey: 'canara_bank_apikey'
+  },
 ];
 
 const mainChartData = getMainChartData();
@@ -90,7 +137,8 @@ class Dashboard extends React.Component{
       role: 'translator',
       username: '',
       password: '',
-      selectedUser: ''
+      selectedUser: '',
+      unModeratedStrings: []
     }
     this.handleUserChange = this.handleUserChange.bind(this);
     this.onCreateUser = this.onCreateUser.bind(this);
@@ -99,6 +147,7 @@ class Dashboard extends React.Component{
     this.onEditSave = this.onEditSave.bind(this);
     this.onCloseModal = this.onCloseModal.bind(this);
     this.deleteUser = this.deleteUser.bind(this);
+    this.initSwalekh = this.initSwalekh.bind(this);
   }
 
   componentDidMount(){
@@ -110,6 +159,7 @@ class Dashboard extends React.Component{
         }
       }
     });
+    this.setState({unModeratedStrings: unmoderatedStrings})
   }
 
   componentWillReceiveProps(nextProps){
@@ -117,12 +167,45 @@ class Dashboard extends React.Component{
       this.props = nextProps
     }
   }
-
   handleUserChange(e){
     this.setState({ [e.target.name] : e.target.value});
   }
 
+  handleStringChange(e,i){
+    const newState = Object.assign({}, this.state);
+    newState.unModeratedStrings[i].target = e.target.value;
+    this.setState({ state: newState });
+    // console.log(e.target.value,i)
+    // this.setState(prevState=> ({
+    //   unModeratedStrings:{
+    //     ...prevState.unModeratedStrings,
+    //     [prevState.unModeratedStrings[i].target]: e.target.value
+    //   }
+    // }))
+  }
 
+  handleStringSave(i){
+    let updatedTarget = this.state.unModeratedStrings[i];
+    console.log(updatedTarget)
+  }
+
+  initSwalekh(i){
+    /*global $*/ // To disable any eslint '$ is not defined' errors
+    if($(`#target_${i}`).attr('data-indic-input-mode')){
+      console.log('Swalekh already initialized');
+      return;
+    }
+    $(`#target_${i}`).indicInputEditor({
+      apikey: 'afee449fdccfa8d5890d5076eb456a79',
+      appid: 'com.prabandhak',
+      orgName: 'Prabandhak',
+      numSuggestions: 7,
+      mode: 'phonetic',
+      domain: 1,
+      theme: 'light'
+    });
+    $(`#target_${i}`).trigger('change_lang', this.state.unModeratedStrings[i].targetLanguage);
+  }
 
   onCreateUser(){
     const { name, username, password, role } = this.state;
@@ -194,7 +277,7 @@ class Dashboard extends React.Component{
 
   render(){
     const { classes, theme, userLists, user } = this.props;
-    const { mainChartState, openUser, name, username, password, editUser,deleteuser } =this.state;
+    const { mainChartState, openUser, name, username, password, editUser,deleteuser, unModeratedStrings } =this.state;
     console.log(this.state)
     let arr = userLists && userLists.map(u=>{
       return[
@@ -554,6 +637,73 @@ class Dashboard extends React.Component{
             <BigStat {...stat} />
           </Grid>
         ))}
+        {user && user.role === 'translator' && (
+          <Grid item xs={12}>
+            <MUIDataTable
+              title="Unmoderated Strings"
+              data={unModeratedStrings}
+              columns={[{
+                name: "source",
+                label: "Source",
+                options: {
+                 filter: false,
+                }
+               },
+               {
+                name: "target",
+                label: "Target",
+                options: {
+                 filter: false,
+                 customBodyRender: (value, tableMeta, updateValue) => (
+                  <TextField 
+                    id={`target_${tableMeta.rowIndex}`} 
+                    value={value} 
+                    style={{ width: '100%'}}
+                    onChange={e=> {
+                      console.log('ok')
+                      this.handleStringChange(e, tableMeta.rowIndex)
+                    }}
+                    onFocus={()=>this.initSwalekh(tableMeta.rowIndex)} 
+                  />
+                 )
+                }
+               },
+               {
+                name: "targetLanguage",
+                label: "Target Language",
+                options: {
+                 filter: true,
+                }
+               },
+               {
+                name: "sourceLanguage",
+                label: "Source Langauge",
+                options: {
+                 filter: true,
+                }
+               },
+               {
+                name: "action",
+                label: "Action",
+                options: {
+                 filter: false,
+                 customBodyRender: (value, tableMeta, updateValue) => (
+                  <Button variant="contained" color="primary"
+                   onClick={()=>this.handleStringSave(tableMeta.rowIndex)}
+                  >Save</Button>
+                )
+                }
+               },
+              ]}
+              options={{
+                filterType: 'checkbox',
+                print: false,
+                download: false,
+                sort: false
+              }}
+          />
+          </Grid>
+        )}
         {user && user.role==='admin' && userLists && userLists.length > 0 && (
           <>
             <div style={{ width: '100%'}}>
