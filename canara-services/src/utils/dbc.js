@@ -1,12 +1,13 @@
 var MongoClient = require('mongodb').MongoClient;
+require('dotenv').config();
 
 module.exports = {
     dbConn: function(){
-        var url = 'mongodb://localhost:27017';
+        var url = process.env.MONGO;
         return new Promise((resolve, reject)=>{
             MongoClient.connect(url,{useUnifiedTopology: true},(err, db) => {
                 if (err) reject(err);
-                var dbc = db.db("canara-bank-localization");
+                var dbc = db.db(process.env.DB);
                 resolve(dbc)
             }); 
         });
