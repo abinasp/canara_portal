@@ -45,10 +45,10 @@ import authReducer  from "../../redux/modules/auth";
 
 const mainChartData = getMainChartData();
 const PieChartData = [
-  { name: "Group A", value: 400, color: "primary" },
-  { name: "Group B", value: 300, color: "secondary" },
-  { name: "Group C", value: 300, color: "warning" },
-  { name: "Group D", value: 200, color: "success" },
+  { name: "Confirmed", value: 400, color: "primary" },
+  { name: "Unconfirmed", value: 300, color: "secondary" },
+  { name: "Machine", value: 300, color: "warning" },
+  { name: "Translated", value: 200, color: "success" },
 ];
 
 class Dashboard extends React.Component{
@@ -83,16 +83,18 @@ class Dashboard extends React.Component{
       <>
       <PageTitle title="Dashboard"/>
       <Grid container spacing={4}>
-        <Grid item lg={3} md={4} sm={6} xs={12}>
+        {user && user.role === 'admin' && (
+          <>
+            <Grid item lg={4} md={4} sm={6} xs={12}>
           <Widget
-            title="Visits Today"
+            title="Total Strings"
             upperTitle
             bodyClass={classes.fullHeightBody}
             className={classes.card}
           >
             <div className={classes.visitsNumberContainer}>
               <Typography size="xl" weight="medium">
-                12, 678
+                500,123
               </Typography>
               <LineChart
                 width={55}
@@ -123,28 +125,28 @@ class Dashboard extends React.Component{
             >
               <Grid item>
                 <Typography color="text" colorBrightness="secondary">
-                  Registrations
+                  Translated
                 </Typography>
-                <Typography size="md">860</Typography>
+                <Typography size="md">496,520</Typography>
               </Grid>
               <Grid item>
                 <Typography color="text" colorBrightness="secondary">
-                  Sign Out
+                  Pending
                 </Typography>
-                <Typography size="md">32</Typography>
+                <Typography size="md">8555</Typography>
               </Grid>
               <Grid item>
                 <Typography color="text" colorBrightness="secondary">
-                  Rate
+                  Efficiency
                 </Typography>
-                <Typography size="md">3.25%</Typography>
+                <Typography size="md">99.25%</Typography>
               </Grid>
             </Grid>
           </Widget>
         </Grid>
-        <Grid item lg={3} md={8} sm={6} xs={12}>
+        <Grid item lg={4} md={8} sm={6} xs={12}>
           <Widget
-            title="App Performance"
+            title="API Health"
             upperTitle
             className={classes.card}
             bodyClass={classes.fullHeightBody}
@@ -157,7 +159,7 @@ class Dashboard extends React.Component{
                   colorBrightness="secondary"
                   className={classes.legendElementText}
                 >
-                  Integration
+                  Unmoderated Strings
                 </Typography>
               </div>
               <div className={classes.legendElement}>
@@ -167,7 +169,7 @@ class Dashboard extends React.Component{
                   colorBrightness="secondary"
                   className={classes.legendElementText}
                 >
-                  SDK
+                  Moderated Strings
                 </Typography>
               </div>
             </div>
@@ -178,113 +180,35 @@ class Dashboard extends React.Component{
                 colorBrightness="secondary"
                 className={classes.progressSectionTitle}
               >
-                Integration
+                Efficiency (97.1%)
               </Typography>
               <LinearProgress
                 variant="determinate"
-                value={30}
+                value={95}
                 classes={{ barColorPrimary: classes.progressBar }}
                 className={classes.progress}
               />
             </div>
-            <div>
+            {/* <div>
               <Typography
                 size="md"
                 color="text"
                 colorBrightness="secondary"
                 className={classes.progressSectionTitle}
               >
-                SDK
+                Efficiency (77%)
               </Typography>
               <LinearProgress
                 variant="determinate"
-                value={55}
+                value={77}
                 classes={{ barColorPrimary: classes.progressBar }}
                 className={classes.progress}
               />
-            </div>
+            </div> */}
           </Widget>
         </Grid>
-        <Grid item lg={3} md={8} sm={6} xs={12}>
-          <Widget
-            title="Server Overview"
-            upperTitle
-            className={classes.card}
-            bodyClass={classes.fullHeightBody}
-          >
-            <div className={classes.serverOverviewElement}>
-              <Typography
-                color="text"
-                colorBrightness="secondary"
-                className={classes.serverOverviewElementText}
-              >
-                60% / 37°С / 3.3 Ghz
-              </Typography>
-              <div className={classes.serverOverviewElementChartWrapper}>
-                <ResponsiveContainer height={50} width="99%">
-                  <AreaChart data={getRandomData(10)}>
-                    <Area
-                      type="natural"
-                      dataKey="value"
-                      stroke={theme.palette.secondary.main}
-                      fill={theme.palette.secondary.light}
-                      strokeWidth={2}
-                      fillOpacity="0.25"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-            <div className={classes.serverOverviewElement}>
-              <Typography
-                color="text"
-                colorBrightness="secondary"
-                className={classes.serverOverviewElementText}
-              >
-                54% / 31°С / 3.3 Ghz
-              </Typography>
-              <div className={classes.serverOverviewElementChartWrapper}>
-                <ResponsiveContainer height={50} width="99%">
-                  <AreaChart data={getRandomData(10)}>
-                    <Area
-                      type="natural"
-                      dataKey="value"
-                      stroke={theme.palette.primary.main}
-                      fill={theme.palette.primary.light}
-                      strokeWidth={2}
-                      fillOpacity="0.25"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-            <div className={classes.serverOverviewElement}>
-              <Typography
-                color="text"
-                colorBrightness="secondary"
-                className={classes.serverOverviewElementText}
-              >
-                57% / 21°С / 3.3 Ghz
-              </Typography>
-              <div className={classes.serverOverviewElementChartWrapper}>
-                <ResponsiveContainer height={50} width="99%">
-                  <AreaChart data={getRandomData(10)}>
-                    <Area
-                      type="natural"
-                      dataKey="value"
-                      stroke={theme.palette.warning.main}
-                      fill={theme.palette.warning.light}
-                      strokeWidth={2}
-                      fillOpacity="0.25"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </Widget>
-        </Grid>
-        <Grid item lg={3} md={4} sm={6} xs={12}>
-          <Widget title="Revenue Breakdown" upperTitle className={classes.card}>
+        <Grid item lg={4} md={4} sm={6} xs={12}>
+          <Widget title="Wordcounts" upperTitle className={classes.card}>
             <Grid container spacing={2}>
               <Grid item xs={6}>
                 <ResponsiveContainer width="100%" height={144}>
@@ -323,6 +247,9 @@ class Dashboard extends React.Component{
             </Grid>
           </Widget>
         </Grid>
+                
+        </>
+        )}
         <Grid item xs={12}>
           <Widget
             bodyClass={classes.mainChartBody}
@@ -333,49 +260,26 @@ class Dashboard extends React.Component{
                   color="text"
                   colorBrightness="secondary"
                 >
-                  Daily Line Chart
+                  Strings Graph with Language wise
                 </Typography>
                 <div className={classes.mainChartHeaderLabels}>
                   <div className={classes.mainChartHeaderLabel}>
                     <Dot color="warning" />
                     <Typography className={classes.mainChartLegentElement}>
-                      Tablet
+                      Moderated Strings
                     </Typography>
                   </div>
                   <div className={classes.mainChartHeaderLabel}>
                     <Dot color="primary" />
                     <Typography className={classes.mainChartLegentElement}>
-                      Mobile
-                    </Typography>
-                  </div>
-                  <div className={classes.mainChartHeaderLabel}>
-                    <Dot color="primary" />
-                    <Typography className={classes.mainChartLegentElement}>
-                      Desktop
+                      Unmoderated Strings
                     </Typography>
                   </div>
                 </div>
-                <Select
-                  value={mainChartState}
-                  onChange={e => this.setState({ mainChartState: e.target.value })}
-                  input={
-                    <OutlinedInput
-                      labelWidth={0}
-                      classes={{
-                        notchedOutline: classes.mainChartSelectRoot,
-                        input: classes.mainChartSelect,
-                      }}
-                    />
-                  }
-                  autoWidth
-                >
-                  <MenuItem value="daily">Daily</MenuItem>
-                  <MenuItem value="weekly">Weekly</MenuItem>
-                  <MenuItem value="monthly">Monthly</MenuItem>
-                </Select>
               </div>
             }
           >
+
             <ResponsiveContainer width="100%" minWidth={500} height={350}>
               <ComposedChart
                 margin={{ top: 0, right: -15, left: -15, bottom: 0 }}
@@ -383,22 +287,15 @@ class Dashboard extends React.Component{
               >
                 <YAxis
                   ticks={[0, 2500, 5000, 7500]}
-                  tick={{ fill: theme.palette.text.hint + "80", fontSize: 14 }}
-                  stroke={theme.palette.text.hint + "80"}
+                  // tick={{ fill: theme.palette.text.hint + "80", fontSize: 14 }}
+                  // stroke={theme.palette.text.hint + "80"}
                   tickLine={false}
                 />
                 <XAxis
                   tickFormatter={i => i + 1}
-                  tick={{ fill: theme.palette.text.hint + "80", fontSize: 14 }}
-                  stroke={theme.palette.text.hint + "80"}
+                  // tick={{ fill: theme.palette.text.hint + "80", fontSize: 14 }}
+                  // stroke={theme.palette.text.hint + "80"}
                   tickLine={false}
-                />
-                <Area
-                  type="natural"
-                  dataKey="desktop"
-                  fill={theme.palette.background.light}
-                  strokeWidth={0}
-                  activeDot={false}
                 />
                 <Line
                   type="natural"
@@ -423,11 +320,11 @@ class Dashboard extends React.Component{
             </ResponsiveContainer>
           </Widget>
         </Grid>
-        {mock.bigStat.map(stat => (
+        {/* {mock.bigStat.map(stat => (
           <Grid item md={4} sm={6} xs={12} key={stat.product}>
             <BigStat {...stat} />
           </Grid>
-        ))}
+        ))} */}
         {user && user.role === 'translator' && (
           <TranslatorDashboard />
         )}
@@ -476,7 +373,6 @@ function getMainChartData() {
       mobile: mobile[i].value,
     });
   }
-
   return resultArray;
 }
 

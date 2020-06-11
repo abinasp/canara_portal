@@ -47,7 +47,7 @@ export default function Widget({
                   onClick={() => setMoreMenuOpen(true)}
                   buttonRef={setMoreButtonRef}
                 >
-                  <MoreIcon />
+                  {/* <MoreIcon /> */}
                 </IconButton>
               )}
             </React.Fragment>
