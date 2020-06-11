@@ -12,7 +12,8 @@ import {
   TableRow,
   TextField,
   Button,
-  InputAdornment
+  InputAdornment,
+  Checkbox
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 
@@ -28,6 +29,7 @@ import TablePaginationsAction from '../components/Table/Table';
 
 const dummy = [
   {
+    un:10,
     source: "Breakfast", 
     target: "Breakfast", 
     targetLanguage: "hindi", 
@@ -35,6 +37,7 @@ const dummy = [
     apikey: 'canara_bank_apikey'
   },
   {
+    un:20,
     source: "Lunch", 
     target: "lunch", 
     targetLanguage: "hindi", 
@@ -42,6 +45,7 @@ const dummy = [
     apikey: 'canara_bank_apikey'
   },
   {
+    un:30,
     source: "Dinner", 
     target: "dinner", 
     targetLanguage: "hindi", 
@@ -49,6 +53,7 @@ const dummy = [
     apikey: 'canara_bank_apikey'
   },
   {
+    un:40,
     source: "Monday", 
     target: "Monday", 
     targetLanguage: "hindi", 
@@ -56,6 +61,7 @@ const dummy = [
     apikey: 'canara_bank_apikey'
   },
   {
+    un:50,
     source: "Apple", 
     target: "apple", 
     targetLanguage: "hindi", 
@@ -63,6 +69,7 @@ const dummy = [
     apikey: 'canara_bank_apikey'
   },
   {
+    un:60,
     source: "Monday", 
     target: "Monday", 
     targetLanguage: "telugu", 
@@ -70,6 +77,7 @@ const dummy = [
     apikey: 'canara_bank_apikey'
   },
   {
+    un:70,
     source: "Apple", 
     target: "apple", 
     targetLanguage: "telugu", 
@@ -77,6 +85,7 @@ const dummy = [
     apikey: 'canara_bank_apikey'
   },
   {
+    un:80,
     source: "Monday", 
     target: "Monday", 
     targetLanguage: "telugu", 
@@ -84,6 +93,7 @@ const dummy = [
     apikey: 'canara_bank_apikey'
   },
   {
+    un:90,
     source: "Apple", 
     target: "apple", 
     targetLanguage: "telugu", 
@@ -104,11 +114,13 @@ class TranslatorDashboard  extends React.Component{
       isLanguageChecked: false,
       languageLists: [],
       menuOpenLang: false,
+      rowSelected: []
     }
     this.initSwalekh = this.initSwalekh.bind(this);
     this.handleChangePage = this.handleChangePage.bind(this);
     this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
     this.handleSearchChange = this.handleSearchChange.bind(this);
+    this.handleSelectAll = this.handleSelectAll.bind(this);
   }
 
   componentDidMount(){
@@ -149,6 +161,35 @@ class TranslatorDashboard  extends React.Component{
     this.setState({search: e.target.value})
   }
 
+  handleSelectAll(e){
+    const { unModeratedStrings } = this.state;
+    if(e.target.checked){
+      const newSelected = unModeratedStrings.map(r=>r.un);
+      this.setState({ rowSelected: newSelected });
+    }else{
+      this.setState({ rowSelected: [] });
+    }
+  }
+
+  handleSelectRow = (e,un)=>{
+    let { rowSelected } = this.state;
+    let newSelected = [];
+    let selectedIndex = rowSelected.indexOf(un);
+    if(selectedIndex === -1){
+      newSelected = newSelected.concat(rowSelected,un);
+    }else if(selectedIndex === 0){
+      newSelected = newSelected.concat(rowSelected.slice(1))
+    }else if(selectedIndex === rowSelected.length-1){
+      newSelected = newSelected.concat(rowSelected.slice(0,-1));
+    }else if(selectedIndex > 0){
+      newSelected = newSelected.concat(
+        rowSelected.slice(0,selectedIndex),
+        rowSelected.slice(selectedIndex+1)
+      );
+    }
+    this.setState({ rowSelected: newSelected });
+  }
+
   handleChangeTarget(e,i){
     const newState = Object.assign({}, this.state);
     newState.unModeratedStrings[i].target = e.target.value;
@@ -180,7 +221,7 @@ class TranslatorDashboard  extends React.Component{
 
   render(){
     const { classes, theme, user } = this.props;
-    const { unModeratedStrings, page, rowsPerPage, search } =this.state;
+    const { unModeratedStrings, page, rowsPerPage, search, rowSelected } =this.state;
     return(
       <>
         <Grid item xs={12}>
@@ -197,6 +238,7 @@ class TranslatorDashboard  extends React.Component{
                       onBlur={() => this.setState({ menuOpenLang: false })}
                       value={this.state.selectedLanguage}
                       tabSelectsValue={false}
+                      placeholder="Select Target Language"
                       onChange={e=>{
                         if(!e){
                           this.setState({ selectedLanguage: [] }, ()=>{
@@ -233,9 +275,23 @@ class TranslatorDashboard  extends React.Component{
                 />
               </Grid>
             </Grid>
+            {rowSelected && rowSelected.length > 0 && (
+              <div style={{ padding: '16px', backgroundColor: 'aliceblue' }}>
+                <p style={{ float: 'left', margin: '8px', fontWeight:'bold', color: '#4581A8' }}>{rowSelected.length} Selected</p>
+                <Button style={{ float: 'right'}} variant="contained" color="primary">Save Selected</Button>
+              </div>
+            )}
             <Table style={{ marginTop: '-10px' }}>
               <TableHead>
                 <TableRow>
+                  <TableCell padding="checkbox" align="center">
+                    <Checkbox
+                      style={{ color: '#6E6E6E' }}
+                      indeterminate={rowSelected.length > 0 && rowSelected.length < unModeratedStrings.length}
+                      checked={rowSelected.length > 0 && rowSelected.length === unModeratedStrings.length}
+                      onChange={this.handleSelectAll}
+                    />
+                  </TableCell>
                   <TableCell padding="default" align="center" style={{ color: '#4581A8'}}>Domain</TableCell>
                   <TableCell padding="default" align="center" style={{ color: '#4581A8'}}>Source String</TableCell>
                   <TableCell padding="default" align="center" style={{ color: '#4581A8'}}>Target String</TableCell>
@@ -246,6 +302,13 @@ class TranslatorDashboard  extends React.Component{
               <TableBody>
                 {unModeratedStrings && unModeratedStrings.map((s,i)=>(
                   <TableRow key={i}>
+                    <TableCell padding="checkbox" align="center">
+                      <Checkbox 
+                        checked={rowSelected.indexOf(s.un) !== -1} 
+                        style={{color: '#4581A8'}} 
+                        onChange={(e)=>this.handleSelectRow(e,s.un)}
+                      />
+                    </TableCell>
                     <TableCell padding="default" align="center">{s.apikey}</TableCell>
                     <TableCell padding="default" align="center">{s.source}</TableCell>
                     <TableCell padding="default" align="center">
