@@ -34,7 +34,7 @@ const dummy = [
     target: "Breakfast", 
     targetLanguage: "hindi", 
     sourceLanguage: "english",
-    apikey: 'canara_bank_apikey'
+    apikey: 'Banking'
   },
   {
     un:20,
@@ -42,7 +42,7 @@ const dummy = [
     target: "lunch", 
     targetLanguage: "hindi", 
     sourceLanguage: "english",
-    apikey: 'canara_bank_apikey'
+    apikey: 'Banking'
   },
   {
     un:30,
@@ -50,7 +50,7 @@ const dummy = [
     target: "dinner", 
     targetLanguage: "hindi", 
     sourceLanguage: "english",
-    apikey: 'canara_bank_apikey'
+    apikey: 'Banking'
   },
   {
     un:40,
@@ -58,7 +58,7 @@ const dummy = [
     target: "Monday", 
     targetLanguage: "hindi", 
     sourceLanguage: "english",
-    apikey: 'canara_bank_apikey'
+    apikey: 'Banking'
   },
   {
     un:50,
@@ -66,7 +66,7 @@ const dummy = [
     target: "apple", 
     targetLanguage: "hindi", 
     sourceLanguage: "english",
-    apikey: 'canara_bank_apikey'
+    apikey: 'Banking'
   },
   {
     un:60,
@@ -74,7 +74,7 @@ const dummy = [
     target: "Monday", 
     targetLanguage: "telugu", 
     sourceLanguage: "english",
-    apikey: 'canara_bank_apikey'
+    apikey: 'Banking'
   },
   {
     un:70,
@@ -82,7 +82,7 @@ const dummy = [
     target: "apple", 
     targetLanguage: "telugu", 
     sourceLanguage: "english",
-    apikey: 'canara_bank_apikey'
+    apikey: 'Banking'
   },
   {
     un:80,
@@ -90,7 +90,7 @@ const dummy = [
     target: "Monday", 
     targetLanguage: "telugu", 
     sourceLanguage: "english",
-    apikey: 'canara_bank_apikey'
+    apikey: 'Banking'
   },
   {
     un:90,
@@ -98,7 +98,7 @@ const dummy = [
     target: "apple", 
     targetLanguage: "telugu", 
     sourceLanguage: "english",
-    apikey: 'canara_bank_apikey'
+    apikey: 'Banking'
   },
 ];
 
