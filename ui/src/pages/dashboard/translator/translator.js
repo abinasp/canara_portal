@@ -136,7 +136,7 @@ class TranslatorDashboard  extends React.Component{
         }
       });
     }
-    this.setState({ unModeratedStrings: dummy, languageLists: newOptions, selectedLanguage: newOptions });
+    this.setState({ unModeratedStrings: dummy, languageLists: newOptions, selectedLanguage: newOptions.length>0 ? newOptions[0] : [] });
   }
 
   componentWillReceiveProps(nextProps){
@@ -231,7 +231,6 @@ class TranslatorDashboard  extends React.Component{
                 {user && user.languages && user.languages.length>0 && (
                   <div style={{ width: '50%' }}>
                     <ReactSelect
-                      isMulti
                       options={this.state.languageLists}
                       menuIsOpen={this.state.menuOpenLang}
                       onFocus={() => this.setState({ menuOpenLang: true })}
@@ -318,6 +317,7 @@ class TranslatorDashboard  extends React.Component{
                         style={{ width: '100%'}}
                         onChange={(e)=>this.handleChangeTarget(e,i)}
                         onFocus={()=>this.initSwalekh(i)}
+                        multiline
                       />
                     </TableCell>
                     <TableCell padding="default" align="center">{s.targetLanguage}</TableCell>
