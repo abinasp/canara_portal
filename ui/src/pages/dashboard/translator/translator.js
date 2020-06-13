@@ -25,7 +25,9 @@ import { withStyles } from '@material-ui/core/styles';
 
 import TranslatorDashboardStyle from '../styles';
 import authReducer from '../../../redux/modules/auth';
+import translationReducer from '../../../redux/modules/translation';
 import TablePaginationsAction from '../components/Table/Table';
+import config from '../../../config';
 
 const dummy = [
   {
@@ -114,7 +116,10 @@ class TranslatorDashboard  extends React.Component{
       isLanguageChecked: false,
       languageLists: [],
       menuOpenLang: false,
-      rowSelected: []
+      rowSelected: [],
+      stringType: {},
+      stringTypeLists:[],
+      menuOpenString: false
     }
     this.initSwalekh = this.initSwalekh.bind(this);
     this.handleChangePage = this.handleChangePage.bind(this);
@@ -125,7 +130,7 @@ class TranslatorDashboard  extends React.Component{
 
   componentDidMount(){
     let newOptions = [];
-    const { user } =this.props;
+    const { user, translationReducer } =this.props;
     if(user && user.languages && user.languages.length > 0){
       user.languages.forEach(lang=>{
         if (lang !== 'english') {
@@ -136,7 +141,21 @@ class TranslatorDashboard  extends React.Component{
         }
       });
     }
-    this.setState({ unModeratedStrings: dummy, languageLists: newOptions, selectedLanguage: newOptions.length>0 ? newOptions[0] : [] });
+    let newOptions1 = config.stringType.map(s=>({label: s[0].toUpperCase() + s.slice(1), value: s}))
+    this.setState({ 
+      unModeratedStrings: dummy, 
+      languageLists: newOptions, 
+      selectedLanguage: newOptions.length>0 ? newOptions[0] : [],
+      stringTypeLists: newOptions1,
+      stringType: newOptions1[0]
+    }, ()=>{
+      translationReducer.getStrings({
+        language: this.state.selectedLanguage.value,
+        page:this.state.page,
+        rowsPerPage: this.state.rowsPerPage,
+        status: this.state.stringType.value
+      });
+    });
   }
 
   componentWillReceiveProps(nextProps){
@@ -227,9 +246,9 @@ class TranslatorDashboard  extends React.Component{
         <Grid item xs={12}>
           <Paper className={classes.paper} classes={{root: classes.widgetRoot}}>
             <Grid container xs={12} style={{ padding: '24px' }}>
-              <Grid item xs={6}>
+              <Grid item xs={3}>
                 {user && user.languages && user.languages.length>0 && (
-                  <div style={{ width: '50%' }}>
+                  <div style={{ marginRight: '10px' }}>
                     <ReactSelect
                       options={this.state.languageLists}
                       menuIsOpen={this.state.menuOpenLang}
@@ -240,7 +259,7 @@ class TranslatorDashboard  extends React.Component{
                       placeholder="Select Target Language"
                       onChange={e=>{
                         if(!e){
-                          this.setState({ selectedLanguage: [] }, ()=>{
+                          this.setState({ selectedLanguage: {} }, ()=>{
                             if(!this.state.selectedLanguage || this.state.selectedLanguage.length === 0 || this.state.selectedLanguage.length !== this.state.languageLists.length){
                               this.setState({ isLanguageChecked: false });
                             }
@@ -256,6 +275,24 @@ class TranslatorDashboard  extends React.Component{
                     />
                   </div>
                 )}
+              </Grid>
+              <Grid item xs={3}>
+                  <ReactSelect 
+                    options={this.state.stringTypeLists}
+                    menuIsOpen={this.state.menuOpenString}
+                    onFocus={() => this.setState({ menuOpenString: true })}
+                    onBlur={() => this.setState({ menuOpenString: false })}
+                    value={this.state.stringType}
+                    tabSelectsValue={false}
+                    placeholder="Select string type"
+                    onChange={e=>{
+                      if(!e){
+                        this.setState({ stringType: {}});
+                      }else{
+                        this.setState({ stringType:e });
+                      }
+                    }}
+                  />
               </Grid>
               <Grid item xs={6}>
                 <TextField 
@@ -355,7 +392,8 @@ const TranslatorDashboardConatiner = connect(
     user: state.get('auth').user
   }),
   dispatch => ({
-    authReducer: authReducer.getActions(dispatch)
+    authReducer: authReducer.getActions(dispatch),
+    translationReducer: translationReducer.getActions(dispatch)
   })
 )(TranslatorDashboard);
 
