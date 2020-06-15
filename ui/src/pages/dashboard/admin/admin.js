@@ -18,12 +18,10 @@ class AdminDashboard extends React.Component{
     const { userLists, user } =this.props;
     return(
       <>
-        {userLists && userLists.length > 0 && (
-          <UserLists 
+        <UserLists 
             userLists={userLists}
             user={user}
-          />
-        )}
+        />
       </>
     )
   }
