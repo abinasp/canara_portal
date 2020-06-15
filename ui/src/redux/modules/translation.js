@@ -6,7 +6,7 @@ const reducerName = 'translation';
 const initialState = {
     loading: false,
     error: null,
-    count: 0,
+    total: 0,
     strings: []
 }
 
@@ -26,7 +26,10 @@ reducerFactory.addAction('GET_STRINGS', 'getStrings',
         return response.data;
     }, (state, action) => {
         const newState = Object.assign({}, state);
-        console.log(action);
+        if(action && action.data){
+            newState.strings = action.data.strings;
+            newState.total = action.data.total;
+        }
         return newState;
     }
 );

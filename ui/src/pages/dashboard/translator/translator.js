@@ -149,12 +149,7 @@ class TranslatorDashboard  extends React.Component{
       stringTypeLists: newOptions1,
       stringType: newOptions1[0]
     }, ()=>{
-      translationReducer.getStrings({
-        language: this.state.selectedLanguage.value,
-        page:this.state.page,
-        rowsPerPage: this.state.rowsPerPage,
-        status: this.state.stringType.value
-      });
+      this.getStrings();
     });
   }
 
@@ -164,15 +159,30 @@ class TranslatorDashboard  extends React.Component{
     }
   }
 
+  getStrings(){
+    const { selectedLanguage, page, rowsPerPage, stringType } = this.state;
+    const { translationReducer } =this.props;
+    translationReducer.getStrings({
+      language: selectedLanguage.value,
+      page:page+1,
+      rowsPerPage: rowsPerPage,
+      status: stringType.value
+    });
+  }
+
   handleChangePage(e,page){
     if(!page) return;
-    this.setState({ page });
+    this.setState({ page },()=>{
+      this.getStrings();
+    });
   }
 
   handleChangeRowsPerPage(e){
     if(e && e.target){
       const { value } = e.target;
-      this.setState({ rowsPerPage: value });
+      this.setState({ rowsPerPage: value }, ()=> {
+        this.getStrings();
+      });
     }
   }
 
@@ -239,14 +249,14 @@ class TranslatorDashboard  extends React.Component{
   }
 
   render(){
-    const { classes, theme, user } = this.props;
+    const { classes, theme, user, strings, total } = this.props;
     const { unModeratedStrings, page, rowsPerPage, search, rowSelected } =this.state;
     return(
       <>
         <Grid item xs={12}>
           <Paper className={classes.paper} classes={{root: classes.widgetRoot}}>
             <Grid container xs={12} style={{ padding: '24px' }}>
-              <Grid item xs={3}>
+              <Grid item xs={12} md={2} lg={2}>
                 {user && user.languages && user.languages.length>0 && (
                   <div style={{ marginRight: '10px' }}>
                     <ReactSelect
@@ -276,7 +286,7 @@ class TranslatorDashboard  extends React.Component{
                   </div>
                 )}
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={12} md={2} lg={2}>
                   <ReactSelect 
                     options={this.state.stringTypeLists}
                     menuIsOpen={this.state.menuOpenString}
@@ -294,6 +304,7 @@ class TranslatorDashboard  extends React.Component{
                     }}
                   />
               </Grid>
+              <Grid item xs={12} md={2} lg={2} />
               <Grid item xs={6}>
                 <TextField 
                   className={classes.margin}
@@ -367,8 +378,8 @@ class TranslatorDashboard  extends React.Component{
               <TableFooter>
                 <TableRow>
                   <TablePagination 
-                    rowsPerPageOptions={[5,10,25,50,100]}
-                    count={unModeratedStrings.length}
+                    rowsPerPageOptions={[10,25,50,100]}
+                    count={total}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={this.handleChangePage}
@@ -389,7 +400,9 @@ const TranslatorDashboardConatiner = connect(
   state => ({
     error: state.get('auth').error,
     loading: state.get('auth').loading,
-    user: state.get('auth').user
+    user: state.get('auth').user,
+    strings: state.get('translation').strings,
+    total: state.get('translation').total
   }),
   dispatch => ({
     authReducer: authReducer.getActions(dispatch),
