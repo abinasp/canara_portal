@@ -11,3 +11,7 @@ export async function getStrings(data){
         }
     });
 }
+
+export async function editStrings(data){
+    return axios.post(`${env.LAAS_API_EDIT}`, data);
+}

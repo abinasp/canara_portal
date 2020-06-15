@@ -34,4 +34,31 @@ reducerFactory.addAction('GET_STRINGS', 'getStrings',
     }
 );
 
+reducerFactory.addAction('HANDLE_CHANGE_TARGET', 'handleChangeTarget',
+    async (data)=> {
+        reducerFactory.action(`${reducerName}Loading`, true);
+        return data;
+    },
+    (state,action) => {
+        const newState = Object.assign({}, state);
+        const { index, value } = action.data;
+        newState.strings[index].target = value;
+        newState.loading = false;
+        return newState;
+    }
+);
+
+reducerFactory.addAction('HANDLE_STRING_SAVE', 'handleStringSave',
+    async (data)=>{
+        reducerFactory.action(`${reducerName}Loading`, true);
+        const response = await TranslationAPi.editStrings(data);
+        return response.data;
+    },
+    (state, action) => {
+        const newState = Object.assign({}, state);
+        newState.loading = false;
+        return newState();
+    }
+)
+
 export default reducerFactory;

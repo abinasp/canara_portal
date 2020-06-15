@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { 
+import {
   Grid,
   Table,
   TableBody,
@@ -13,7 +13,12 @@ import {
   TextField,
   Button,
   InputAdornment,
-  Checkbox
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 
@@ -29,110 +34,40 @@ import translationReducer from '../../../redux/modules/translation';
 import TablePaginationsAction from '../components/Table/Table';
 import config from '../../../config';
 
-const dummy = [
-  {
-    un:10,
-    source: "Breakfast", 
-    target: "Breakfast", 
-    targetLanguage: "hindi", 
-    sourceLanguage: "english",
-    apikey: 'Banking'
-  },
-  {
-    un:20,
-    source: "Lunch", 
-    target: "lunch", 
-    targetLanguage: "hindi", 
-    sourceLanguage: "english",
-    apikey: 'Banking'
-  },
-  {
-    un:30,
-    source: "Dinner", 
-    target: "dinner", 
-    targetLanguage: "hindi", 
-    sourceLanguage: "english",
-    apikey: 'Banking'
-  },
-  {
-    un:40,
-    source: "Monday", 
-    target: "Monday", 
-    targetLanguage: "hindi", 
-    sourceLanguage: "english",
-    apikey: 'Banking'
-  },
-  {
-    un:50,
-    source: "Apple", 
-    target: "apple", 
-    targetLanguage: "hindi", 
-    sourceLanguage: "english",
-    apikey: 'Banking'
-  },
-  {
-    un:60,
-    source: "Monday", 
-    target: "Monday", 
-    targetLanguage: "telugu", 
-    sourceLanguage: "english",
-    apikey: 'Banking'
-  },
-  {
-    un:70,
-    source: "Apple", 
-    target: "apple", 
-    targetLanguage: "telugu", 
-    sourceLanguage: "english",
-    apikey: 'Banking'
-  },
-  {
-    un:80,
-    source: "Monday", 
-    target: "Monday", 
-    targetLanguage: "telugu", 
-    sourceLanguage: "english",
-    apikey: 'Banking'
-  },
-  {
-    un:90,
-    source: "Apple", 
-    target: "apple", 
-    targetLanguage: "telugu", 
-    sourceLanguage: "english",
-    apikey: 'Banking'
-  },
-];
 
-class TranslatorDashboard  extends React.Component{
-  constructor(props){
+class TranslatorDashboard extends React.Component {
+  constructor(props) {
     super(props);
-    this.state={
+    this.state = {
       unModeratedStrings: [],
       page: 0,
-      rowsPerPage: 5,
-      search:'',
+      rowsPerPage: 10,
+      search: '',
       selectedLanguage: [],
       isLanguageChecked: false,
       languageLists: [],
       menuOpenLang: false,
       rowSelected: [],
       stringType: {},
-      stringTypeLists:[],
-      menuOpenString: false
+      stringTypeLists: [],
+      menuOpenString: false,
+      strings: [],
+      open: false,
+      editedIndex: ''
     }
     this.initSwalekh = this.initSwalekh.bind(this);
     this.handleChangePage = this.handleChangePage.bind(this);
     this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
     this.handleSearchChange = this.handleSearchChange.bind(this);
     this.handleSelectAll = this.handleSelectAll.bind(this);
+    this.onSaveModeratedString = this.onSaveModeratedString.bind(this);
   }
 
-  componentDidMount(){
+  componentDidMount() {
     let newOptions = [];
-    const { user, translationReducer } =this.props;
-    if(user && user.languages && user.languages.length > 0){
-      user.languages.forEach(lang=>{
+    const { user } = this.props;
+    if (user && user.languages && user.languages.length > 0) {
+      user.languages.forEach(lang => {
         if (lang !== 'english') {
           newOptions.push({
             label: lang[0].toUpperCase() + lang.slice(1),
@@ -141,98 +76,121 @@ class TranslatorDashboard  extends React.Component{
         }
       });
     }
-    let newOptions1 = config.stringType.map(s=>({label: s[0].toUpperCase() + s.slice(1), value: s}))
-    this.setState({ 
-      unModeratedStrings: dummy, 
-      languageLists: newOptions, 
-      selectedLanguage: newOptions.length>0 ? newOptions[0] : [],
+    let newOptions1 = config.stringType.map(s => ({ label: s[0].toUpperCase() + s.slice(1), value: s }))
+    this.setState({
+      languageLists: newOptions,
+      selectedLanguage: newOptions.length > 0 ? newOptions[0] : [],
       stringTypeLists: newOptions1,
       stringType: newOptions1[0]
-    }, ()=>{
+    }, () => {
       this.getStrings();
     });
   }
 
-  componentWillReceiveProps(nextProps){
-    if(this.props !== nextProps){
+  componentWillReceiveProps(nextProps) {
+    if (this.props !== nextProps) {
       this.props = nextProps
     }
   }
 
-  getStrings(){
+  getStrings() {
     const { selectedLanguage, page, rowsPerPage, stringType } = this.state;
-    const { translationReducer } =this.props;
+    const { translationReducer } = this.props;
     translationReducer.getStrings({
       language: selectedLanguage.value,
-      page:page+1,
+      page: page + 1,
       rowsPerPage: rowsPerPage,
       status: stringType.value
+    }).then(res=>{
+      const { strings } = this.props;
+      this.setState({ strings });
     });
   }
 
-  handleChangePage(e,page){
-    if(!page) return;
-    this.setState({ page },()=>{
+  handleChangePage(e, page) {
+    // console.log(page)
+    // if(!page) return;
+    this.setState({ page }, () => {
       this.getStrings();
     });
   }
 
-  handleChangeRowsPerPage(e){
-    if(e && e.target){
+  handleChangeRowsPerPage(e) {
+    if (e && e.target) {
       const { value } = e.target;
-      this.setState({ rowsPerPage: value }, ()=> {
+      this.setState({ rowsPerPage: value }, () => {
         this.getStrings();
       });
     }
   }
 
-  handleSearchChange(e){
-    this.setState({search: e.target.value})
+  handleSearchChange(e) {
+    this.setState({ search: e.target.value })
   }
 
-  handleSelectAll(e){
-    const { unModeratedStrings } = this.state;
-    if(e.target.checked){
-      const newSelected = unModeratedStrings.map(r=>r.un);
+  handleSelectAll(e) {
+    const { strings } = this.props;
+    if (e.target.checked) {
+      const newSelected = strings.map(r => r.row_id);
       this.setState({ rowSelected: newSelected });
-    }else{
+    } else {
       this.setState({ rowSelected: [] });
     }
   }
 
-  handleSelectRow = (e,un)=>{
+  handleSelectRow = (e, row_id) => {
     let { rowSelected } = this.state;
     let newSelected = [];
-    let selectedIndex = rowSelected.indexOf(un);
-    if(selectedIndex === -1){
-      newSelected = newSelected.concat(rowSelected,un);
-    }else if(selectedIndex === 0){
+    let selectedIndex = rowSelected.indexOf(row_id);
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(rowSelected, row_id);
+    } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(rowSelected.slice(1))
-    }else if(selectedIndex === rowSelected.length-1){
-      newSelected = newSelected.concat(rowSelected.slice(0,-1));
-    }else if(selectedIndex > 0){
+    } else if (selectedIndex === rowSelected.length - 1) {
+      newSelected = newSelected.concat(rowSelected.slice(0, -1));
+    } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(
-        rowSelected.slice(0,selectedIndex),
-        rowSelected.slice(selectedIndex+1)
+        rowSelected.slice(0, selectedIndex),
+        rowSelected.slice(selectedIndex + 1)
       );
     }
     this.setState({ rowSelected: newSelected });
   }
 
-  handleChangeTarget(e,i){
+  handleChangeTarget(e, index) {
     const newState = Object.assign({}, this.state);
-    newState.unModeratedStrings[i].target = e.target.value;
-    this.setState({ state: newState });
+    newState.strings[index].target = e.target ? e.target.value : newState.strings[index].target;
+    this.setState({ strings: newState.strings });
+    // const { translationReducer } = this.props;
+    // translationReducer.handleChangeTarget({ index, value: e.target && e.target.value });
   }
 
-  onTargetSave(i){
-    const { unModeratedStrings } = this.state;
-    console.log(unModeratedStrings[i]);
+  onTargetSave(i) {
+    const {strings} = this.state;
+    const editedString = strings[i];
+    if(editedString.status === "moderated"){
+      this.setState({ open: true, editedIndex: i });
+    }else{
+      const { translationReducer } = this.props;
+      translationReducer.handleStringSave(editedString).then(res=>{
+        this.getStrings();
+      })
+    }
   }
 
-  initSwalekh(i){
+  onSaveModeratedString(){
+    const {strings, editedIndex} = this.state;
+    const editedString = strings[editedIndex];
+    const { translationReducer } = this.props;
+    translationReducer.handleStringSave(editedString).then(res=>{
+      this.getStrings();
+    })
+  }
+
+  initSwalekh(i) {
     /*global $*/ // To disable any eslint '$ is not defined' errors
-    if($(`#target_${i}`).attr('data-indic-input-mode')){
+    const { strings } = this.state;
+    if ($(`#target_${i}`).attr('data-indic-input-mode')) {
       console.log('Swalekh already initialized');
       return;
     }
@@ -245,19 +203,19 @@ class TranslatorDashboard  extends React.Component{
       domain: 1,
       theme: 'light'
     });
-    $(`#target_${i}`).trigger('change_lang', this.state.unModeratedStrings[i].targetLanguage);
+    $(`#target_${i}`).trigger('change_lang', strings[i].targetLanguage);
   }
 
-  render(){
-    const { classes, theme, user, strings, total } = this.props;
-    const { unModeratedStrings, page, rowsPerPage, search, rowSelected } =this.state;
-    return(
+  render() {
+    const { classes, theme, user, total } = this.props;
+    const { page, rowsPerPage, search, rowSelected, strings, open } = this.state;
+    return (
       <>
         <Grid item xs={12}>
-          <Paper className={classes.paper} classes={{root: classes.widgetRoot}}>
+          <Paper className={classes.paper} classes={{ root: classes.widgetRoot }}>
             <Grid container xs={12} style={{ padding: '24px' }}>
               <Grid item xs={12} md={2} lg={2}>
-                {user && user.languages && user.languages.length>0 && (
+                {user && user.languages && user.languages.length > 0 && (
                   <div style={{ marginRight: '10px' }}>
                     <ReactSelect
                       options={this.state.languageLists}
@@ -267,18 +225,14 @@ class TranslatorDashboard  extends React.Component{
                       value={this.state.selectedLanguage}
                       tabSelectsValue={false}
                       placeholder="Select Target Language"
-                      onChange={e=>{
-                        if(!e){
-                          this.setState({ selectedLanguage: {} }, ()=>{
-                            if(!this.state.selectedLanguage || this.state.selectedLanguage.length === 0 || this.state.selectedLanguage.length !== this.state.languageLists.length){
-                              this.setState({ isLanguageChecked: false });
-                            }
+                      onChange={e => {
+                        if (!e) {
+                          this.setState({ selectedLanguage: {} }, () => {
+                            this.getStrings();
                           })
-                        }else{
-                          this.setState({ selectedLanguage: e }, ()=>{
-                            if (!this.state.selectedLanguage || this.state.selectedLanguage.length === 0 || this.state.selectedLanguage.length !== this.state.languageLists.length) {
-                              this.setState({ isLanguageChecked: false });
-                            }
+                        } else {
+                          this.setState({ selectedLanguage: e }, () => {
+                            this.getStrings()
                           })
                         }
                       }}
@@ -287,33 +241,37 @@ class TranslatorDashboard  extends React.Component{
                 )}
               </Grid>
               <Grid item xs={12} md={2} lg={2}>
-                  <ReactSelect 
-                    options={this.state.stringTypeLists}
-                    menuIsOpen={this.state.menuOpenString}
-                    onFocus={() => this.setState({ menuOpenString: true })}
-                    onBlur={() => this.setState({ menuOpenString: false })}
-                    value={this.state.stringType}
-                    tabSelectsValue={false}
-                    placeholder="Select string type"
-                    onChange={e=>{
-                      if(!e){
-                        this.setState({ stringType: {}});
-                      }else{
-                        this.setState({ stringType:e });
-                      }
-                    }}
-                  />
+                <ReactSelect
+                  options={this.state.stringTypeLists}
+                  menuIsOpen={this.state.menuOpenString}
+                  onFocus={() => this.setState({ menuOpenString: true })}
+                  onBlur={() => this.setState({ menuOpenString: false })}
+                  value={this.state.stringType}
+                  tabSelectsValue={false}
+                  placeholder="Select string type"
+                  onChange={e => {
+                    if (!e) {
+                      this.setState({ stringType: {} }, () => {
+                        this.getStrings();
+                      });
+                    } else {
+                      this.setState({ stringType: e }, () => {
+                        this.getStrings();
+                      });
+                    }
+                  }}
+                />
               </Grid>
               <Grid item xs={12} md={2} lg={2} />
               <Grid item xs={6}>
-                <TextField 
+                <TextField
                   className={classes.margin}
                   value={search}
-                  style={{ width: '50%', float:'right' }}
+                  style={{ width: '50%', float: 'right' }}
                   placeholder="Search Source..."
                   onChange={this.handleSearchChange}
                   InputProps={{
-                    startAdornment:(
+                    startAdornment: (
                       <InputAdornment position="start">
                         <SearchIcon color="primary" />
                       </InputAdornment>
@@ -324,8 +282,8 @@ class TranslatorDashboard  extends React.Component{
             </Grid>
             {rowSelected && rowSelected.length > 0 && (
               <div style={{ padding: '16px', backgroundColor: 'aliceblue' }}>
-                <p style={{ float: 'left', margin: '8px', fontWeight:'bold', color: '#4581A8' }}>{rowSelected.length} Selected</p>
-                <Button style={{ float: 'right'}} variant="contained" color="primary">Save Selected</Button>
+                <p style={{ float: 'left', margin: '8px', fontWeight: 'bold', color: '#4581A8' }}>{rowSelected.length} Selected</p>
+                <Button style={{ float: 'right' }} variant="contained" color="primary">Save Selected</Button>
               </div>
             )}
             <Table style={{ marginTop: '-10px' }}>
@@ -334,51 +292,52 @@ class TranslatorDashboard  extends React.Component{
                   <TableCell padding="checkbox" align="center">
                     <Checkbox
                       style={{ color: '#6E6E6E' }}
-                      indeterminate={rowSelected.length > 0 && rowSelected.length < unModeratedStrings.length}
-                      checked={rowSelected.length > 0 && rowSelected.length === unModeratedStrings.length}
+                      indeterminate={rowSelected.length > 0 && rowSelected.length < strings.length}
+                      checked={rowSelected.length > 0 && rowSelected.length === strings.length}
                       onChange={this.handleSelectAll}
                     />
                   </TableCell>
-                  <TableCell padding="default" align="center" style={{ color: '#4581A8'}}>Domain</TableCell>
-                  <TableCell padding="default" align="center" style={{ color: '#4581A8'}}>Source String</TableCell>
-                  <TableCell padding="default" align="center" style={{ color: '#4581A8'}}>Target String</TableCell>
-                  <TableCell padding="default" align="center" style={{ color: '#4581A8'}}>Target Language</TableCell>
-                  <TableCell padding="default" align="center" style={{ color: '#4581A8'}}>Action</TableCell>
+                  <TableCell padding="default" align="center" style={{ color: '#4581A8' }}>Source String</TableCell>
+                  <TableCell padding="default" align="center" style={{ color: '#4581A8' }}>Target String</TableCell>
+                  <TableCell padding="default" align="center" style={{ color: '#4581A8' }}>Target Language</TableCell>
+                  <TableCell padding="default" align="center" style={{ color: '#4581A8' }}>String Type</TableCell>
+                  <TableCell padding="default" align="center" style={{ color: '#4581A8' }}>Action</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {unModeratedStrings && unModeratedStrings.map((s,i)=>(
+                {strings && strings.map((s, i) => (
                   <TableRow key={i}>
                     <TableCell padding="checkbox" align="center">
-                      <Checkbox 
-                        checked={rowSelected.indexOf(s.un) !== -1} 
-                        style={{color: '#4581A8'}} 
-                        onChange={(e)=>this.handleSelectRow(e,s.un)}
+                      <Checkbox
+                        checked={rowSelected.indexOf(s.row_id) !== -1}
+                        style={{ color: '#4581A8' }}
+                        onChange={(e) => this.handleSelectRow(e, s.row_id)}
                       />
                     </TableCell>
-                    <TableCell padding="default" align="center">{s.apikey}</TableCell>
                     <TableCell padding="default" align="center">{s.source}</TableCell>
                     <TableCell padding="default" align="center">
-                      <TextField 
+                      <TextField
                         id={`target_${i}`}
                         value={s.target}
-                        style={{ width: '100%'}}
-                        onChange={(e)=>this.handleChangeTarget(e,i)}
-                        onFocus={()=>this.initSwalekh(i)}
+                        style={{ width: '100%' }}
+                        onChange={(e) => this.handleChangeTarget(e, i)}
+                        onBlur={(e)=>this.handleChangeTarget(e, i)}
+                        onFocus={() => this.initSwalekh(i)}
                         multiline
                       />
                     </TableCell>
                     <TableCell padding="default" align="center">{s.targetLanguage}</TableCell>
+                    <TableCell padding="default" align="center">{s.status}</TableCell>
                     <TableCell padding="default" align="center">
-                      <Button color="primary" variant="contained" onClick={()=>this.onTargetSave(i)} >Save</Button>
+                      <Button color="primary" variant="contained" onClick={() => this.onTargetSave(i)} >Save</Button>
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
               <TableFooter>
                 <TableRow>
-                  <TablePagination 
-                    rowsPerPageOptions={[10,25,50,100]}
+                  <TablePagination
+                    rowsPerPageOptions={[10, 25, 50, 100]}
                     count={total}
                     rowsPerPage={rowsPerPage}
                     page={page}
@@ -391,6 +350,20 @@ class TranslatorDashboard  extends React.Component{
             </Table>
           </Paper>
         </Grid>
+        <Dialog open={open} onClose={()=>this.setState({open : false})} aria-labelledby="form-dialog-title" fullWidth maxWidth="sm">
+          <DialogTitle id="form-dialog-title">Save String</DialogTitle>
+          <DialogContent>
+            <DialogContentText>Are you sure to save this moderated string ?</DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={()=>this.setState({open: false})} classes={{ root: classes.button }} variant="contained" size="large" color="secondary">
+              No
+            </Button>
+            <Button onClick={this.onSaveModeratedString} classes={{ root: classes.button }} variant="contained" size="large" color="primary">
+              Yes
+            </Button>
+          </DialogActions>
+        </Dialog>
       </>
     )
   }
@@ -410,4 +383,4 @@ const TranslatorDashboardConatiner = connect(
   })
 )(TranslatorDashboard);
 
-export default withStyles(TranslatorDashboardStyle, {withTheme: true})(TranslatorDashboardConatiner);
+export default withStyles(TranslatorDashboardStyle, { withTheme: true })(TranslatorDashboardConatiner);
