@@ -21,6 +21,7 @@ import {
   DialogTitle,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
+import toastr from 'toastr';
 
 import { connect } from 'react-redux';
 import ReactSelect from 'react-select';
@@ -62,6 +63,7 @@ class TranslatorDashboard extends React.Component {
     this.handleSelectAll = this.handleSelectAll.bind(this);
     this.onSaveModeratedString = this.onSaveModeratedString.bind(this);
     this.onSearchStrings = this.onSearchStrings.bind(this);
+    this.onSaveMultipleString = this.onSaveMultipleString.bind(this);
   }
 
   componentDidMount() {
@@ -184,12 +186,12 @@ class TranslatorDashboard extends React.Component {
 
   onTargetSave(i) {
     const {strings} = this.state;
-    const editedString = [strings[i]];
+    const editedString = strings[i];
     if(editedString.status === "moderated"){
       this.setState({ open: true, editedIndex: i });
     }else{
       const { translationReducer } = this.props;
-      translationReducer.handleStringSave(editedString).then(res=>{
+      translationReducer.handleStringSave([editedString]).then(res=>{
         this.getStrings();
       })
     }
@@ -197,10 +199,32 @@ class TranslatorDashboard extends React.Component {
 
   onSaveModeratedString(){
     const {strings, editedIndex} = this.state;
-    const editedString = [strings[editedIndex]];
+    const editedString = strings[editedIndex];
     const { translationReducer } = this.props;
-    translationReducer.handleStringSave(editedString).then(res=>{
+    translationReducer.handleStringSave([editedString]).then(res=>{
       this.getStrings();
+      this.setState({ open: false })
+      if(res.status === 1){
+        toastr.success('Transalation has been saved');
+      }else{
+        toastr.warning(res.message);
+      }
+    })
+  }
+
+  onSaveMultipleString(){
+    const { rowSelected, strings } = this.state;
+    if(!rowSelected || rowSelected.length===0){
+      return toastr.warning('Select at least one row');
+    }
+    let newEditedStrings = strings.filter(s=>rowSelected.indexOf(s.row_id) !== -1)
+    const { translationReducer } = this.props;
+    translationReducer.handleStringSave(newEditedStrings).then(res=>{
+      this.getStrings();
+      if(res.status === 1){
+        toastr.success('Transalation has been saved');
+        this.setState({ rowSelected: [] });
+      }
     })
   }
 
@@ -301,7 +325,7 @@ class TranslatorDashboard extends React.Component {
             {rowSelected && rowSelected.length > 0 && (
               <div style={{ padding: '16px', backgroundColor: 'aliceblue' }}>
                 <p style={{ float: 'left', margin: '8px', fontWeight: 'bold', color: '#4581A8' }}>{rowSelected.length} Selected</p>
-                <Button style={{ float: 'right' }} variant="contained" color="primary">Save Selected</Button>
+                <Button style={{ float: 'right' }} variant="contained" color="primary" onClick={this.onSaveMultipleString}>Save Selected</Button>
               </div>
             )}
             <Table style={{ marginTop: '-10px' }}>

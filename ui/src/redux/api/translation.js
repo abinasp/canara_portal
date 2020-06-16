@@ -7,7 +7,8 @@ export async function getStrings(data){
             language: data.language,
             page:data.page,
             rowsPerPage: data.rowsPerPage,
-            status: data.status
+            status: data.status,
+            search: data.search
         }
     });
 }
