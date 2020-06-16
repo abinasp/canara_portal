@@ -57,7 +57,7 @@ reducerFactory.addAction('HANDLE_STRING_SAVE', 'handleStringSave',
     (state, action) => {
         const newState = Object.assign({}, state);
         newState.loading = false;
-        return newState();
+        return newState;
     }
 )
 

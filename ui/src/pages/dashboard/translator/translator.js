@@ -167,7 +167,7 @@ class TranslatorDashboard extends React.Component {
 
   onTargetSave(i) {
     const {strings} = this.state;
-    const editedString = strings[i];
+    const editedString = [strings[i]];
     if(editedString.status === "moderated"){
       this.setState({ open: true, editedIndex: i });
     }else{
@@ -180,7 +180,7 @@ class TranslatorDashboard extends React.Component {
 
   onSaveModeratedString(){
     const {strings, editedIndex} = this.state;
-    const editedString = strings[editedIndex];
+    const editedString = [strings[editedIndex]];
     const { translationReducer } = this.props;
     translationReducer.handleStringSave(editedString).then(res=>{
       this.getStrings();
