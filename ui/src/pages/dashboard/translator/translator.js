@@ -61,6 +61,7 @@ class TranslatorDashboard extends React.Component {
     this.handleSearchChange = this.handleSearchChange.bind(this);
     this.handleSelectAll = this.handleSelectAll.bind(this);
     this.onSaveModeratedString = this.onSaveModeratedString.bind(this);
+    this.onSearchStrings = this.onSearchStrings.bind(this);
   }
 
   componentDidMount() {
@@ -94,12 +95,13 @@ class TranslatorDashboard extends React.Component {
   }
 
   getStrings() {
-    const { selectedLanguage, page, rowsPerPage, stringType } = this.state;
+    const { selectedLanguage, page, rowsPerPage, stringType, search } = this.state;
     const { translationReducer } = this.props;
     translationReducer.getStrings({
       language: selectedLanguage.value,
       page: page + 1,
       rowsPerPage: rowsPerPage,
+      search,
       status: stringType.value
     }).then(res=>{
       const { strings } = this.props;
@@ -125,7 +127,22 @@ class TranslatorDashboard extends React.Component {
   }
 
   handleSearchChange(e) {
-    this.setState({ search: e.target.value })
+    const { search } = this.state;
+    if(e.target && e.target.value && e.target.value.length > 0){
+      this.setState({ search: e.target.value });
+    }else{
+      this.setState({ search: '' }, ()=>{
+        this.getStrings();
+      })
+    }
+  }
+
+  onSearchStrings(e){
+    if(e.charCode === 13){
+      this.setState({ page: 0 }, ()=>{
+        this.getStrings();
+      })
+    }
   }
 
   handleSelectAll(e) {
@@ -270,6 +287,7 @@ class TranslatorDashboard extends React.Component {
                   style={{ width: '50%', float: 'right' }}
                   placeholder="Search Source..."
                   onChange={this.handleSearchChange}
+                  onKeyPress={this.onSearchStrings}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
