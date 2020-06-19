@@ -6,6 +6,7 @@ import {
   withRouter,
 } from "react-router-dom";
 import classnames from "classnames";
+import { connect } from "react-redux";
 
 // styles
 import useStyles from "./styles";
@@ -16,6 +17,10 @@ import Sidebar from "../Sidebar";
 
 // pages
 import Dashboard from "../../pages/dashboard";
+import UserLists from "../../pages/dashboard/admin/admin";
+import StringLists from "../../pages/dashboard/admin/strings";
+import authReducer from "../../redux/modules/auth";
+
 
 // context
 import { useLayoutState } from "../../context/LayoutContext";
@@ -28,7 +33,9 @@ function Layout(props) {
     <div className={classes.root}>
         <>
           <Header history={props.history} {...props}/>
-          {/* <Sidebar /> */}
+          {props.user && props.user.role === "admin" && (
+            <Sidebar />
+          )}
           <div
             className={classnames(classes.content, {
               [classes.contentShift]: layoutState.isSidebarOpened,
@@ -37,6 +44,8 @@ function Layout(props) {
             <div className={classes.fakeToolbar} />
             <Switch>
               <Route path="/app/dashboard" component={Dashboard} />
+              <Route path="/app/users" component={UserLists} />
+              <Route path="/app/translations" component={StringLists} />
             </Switch>
           </div>
         </>
@@ -44,4 +53,12 @@ function Layout(props) {
   );
 }
 
-export default withRouter(Layout);
+const LayoutContainer = connect(
+  state => ({
+    user: state.get('auth').user
+  }),
+  dispatch => ({
+    authReducer: authReducer.getActions(dispatch)
+  })
+)(Layout);
+export default LayoutContainer;

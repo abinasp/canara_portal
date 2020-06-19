@@ -162,11 +162,9 @@ class UserLists extends React.Component {
     });
     return (
       <>
-        <div style={{ width: '100%' }}>
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', margin: '16px 0' }}>
           <Button
-            style={{ float: 'right', margin: '0 16px' }}
-            classes={{ root: classes.button }}
-            variant="contained"
+            variant="outlined"
             size="large"
             color="primary"
             onClick={() => this.setState({ openUser: true })}

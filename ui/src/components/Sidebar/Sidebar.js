@@ -14,6 +14,7 @@ import {
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import SettingsIcon from '@material-ui/icons/Settings';
 import TimelineIcon from '@material-ui/icons/Timeline';
+import GroupIcon from '@material-ui/icons/Group';
 import { useTheme } from "@material-ui/styles";
 import { withRouter } from "react-router-dom";
 import classNames from "classnames";
@@ -39,23 +40,17 @@ const structure = [
     link: "/app/dashboard", 
     icon: <DashboardIcon /> 
   },
-  {
-    id: 1,
-    label: "Transation Stats",
-    link: "/app/stats",
-    icon: <TableIcon />,
-  },
   { 
-    id: 2, 
-    label: "Health Check", 
-    link: "/app/check", 
-    icon: <TimelineIcon /> 
+    id: 1, 
+    label: "Users", 
+    link: "/app/users", 
+    icon: <GroupIcon /> 
   },
   {
-    id: 3,
-    label: "Settings",
-    link: "/app/settings",
-    icon: <SettingsIcon />,
+    id: 2,
+    label: "Transation Stats",
+    link: "/app/translations",
+    icon: <TableIcon />,
   }
 ];
 

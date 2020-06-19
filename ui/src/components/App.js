@@ -21,6 +21,7 @@ function App(props) {
       <Switch>
         <Route exact path="/" component={Login} />
         <Route exact path="/app/dashboard" component={Layout} />
+        <Route path="/app" component={Layout} />
         <Route path="/login" component={Login} />
         <Route component={Error} />
       </Switch>

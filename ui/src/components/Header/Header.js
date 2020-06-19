@@ -6,6 +6,8 @@ import {
   Menu,
 } from "@material-ui/core";
 import {
+  Menu as MenuIcon,
+  ArrowBack as ArrowBackIcon,
   Person as AccountIcon,
 } from "@material-ui/icons";
 import history from '../../utils/history';
@@ -13,22 +15,59 @@ import history from '../../utils/history';
 // styles
 import useStyles from "./styles";
 import { connect } from "react-redux";
-import authReducer  from "../../redux/modules/auth";
+import authReducer from "../../redux/modules/auth";
+import classNames from "classnames";
 
 // components
 import { Badge, Typography, Button } from "../Wrappers/Wrappers";
+import {
+  useLayoutState,
+  useLayoutDispatch,
+  toggleSidebar,
+} from "../../context/LayoutContext";
 
 import { useUserDispatch, signOut } from "../../context/UserContext";
 
 
 function Header(props) {
   var classes = useStyles();
+  var layoutState = useLayoutState();
   var userDispatch = useUserDispatch();
+  var layoutDispatch = useLayoutDispatch();
   var [profileMenu, setProfileMenu] = useState(null);
-
   return (
     <AppBar position="fixed" className={classes.appBar}>
       <Toolbar className={classes.toolbar}>
+        {props.user && props.user.role === "admin" && (
+          <IconButton
+            color="inherit"
+            onClick={() => toggleSidebar(layoutDispatch)}
+            className={classNames(
+              classes.headerMenuButton,
+              classes.headerMenuButtonCollapse,
+            )}
+          >
+            {layoutState.isSidebarOpened ? (
+              <MenuIcon
+                classes={{
+                  root: classNames(
+                    classes.headerIcon,
+                    classes.headerIconCollapse,
+                  ),
+                }}
+              />
+            ) : (
+                <MenuIcon
+                  classes={{
+                    root: classNames(
+                      classes.headerIcon,
+                      classes.headerIconCollapse,
+                    ),
+                  }}
+                />
+              )}
+          </IconButton>
+        )}
         <Typography variant="h6" weight="medium" className={classes.logotype}>
           Canara Bank Localization
         </Typography>

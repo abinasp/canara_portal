@@ -328,9 +328,9 @@ class Dashboard extends React.Component{
         {user && user.role === 'translator' && (
           <TranslatorDashboard />
         )}
-        {user && user.role==='admin' && (
+        {/* {user && user.role==='admin' && (
           <AdminDashboard />
-        )}
+        )} */}
       </Grid>
     </>
     )
