@@ -1,0 +1,17 @@
+{
+  "name": "canara",
+  "version": "1.0.0",
+  "description": "ReverieJS for canara",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "^4.0.2"
+  },
+  "dependencies": {
+    "rollup": "^2.26.6"
+  }
+}
