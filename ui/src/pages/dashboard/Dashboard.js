@@ -21,6 +21,11 @@ import {
   Cell,
   YAxis,
   XAxis,
+  BarChart,
+  CartesianGrid,
+  Tooltip,
+  CartesianAxis,
+  Bar
 } from "recharts";
 
 import AdminDashboard from './admin/admin';
@@ -32,16 +37,14 @@ import TranslatorDashboard from './translator/translator';
 import DashboardStyle from "./styles";
 
 // components
-import mock from "./mock";
 import Widget from "../../components/Widget";
 import PageTitle from "../../components/PageTitle";
 import { Typography } from "../../components/Wrappers";
 import Dot from "../../components/Sidebar/components/Dot";
-import Table from "./components/Table/Table";
-import BigStat from "./components/BigStat/BigStat";
 
-
+import config from "../../config";
 import authReducer  from "../../redux/modules/auth";
+import dashboardReducer from "../../redux/modules/dashboard";
 
 const mainChartData = getMainChartData();
 const PieChartData = [
@@ -68,6 +71,12 @@ class Dashboard extends React.Component{
         }
       }
     });
+    this.getStringsCountForDashboard();
+  }
+
+  getStringsCountForDashboard(){
+    const { dashboardReducer } = this.props;
+    dashboardReducer.getStringsCount();
   }
 
   componentWillReceiveProps(nextProps){
@@ -77,8 +86,33 @@ class Dashboard extends React.Component{
   }
 
   render(){
-    const { classes, theme, user } = this.props;
+    const { classes, theme, user, stringsCount } = this.props;
     const { mainChartState } =this.state;
+    let barData = [];
+    if(stringsCount && stringsCount.length > 0){
+      stringsCount.map(s=>{
+        // if(user.role === "translator"){
+        //   if(user.languages && user.languages.indexOf(s.targetLanguage) > -1){
+        //     barData.push({
+        //       Language: config.reverseLanguageCodeMap[s.targetLanguage].toUpperCase(),
+        //       Moderated: s.moderated,
+        //       Unmoderated: s.unmdorated
+        //     });
+        //   }
+        // }else{
+        //   barData.push({
+        //     Language: config.reverseLanguageCodeMap[s.targetLanguage].toUpperCase(),
+        //     Moderated: s.moderated,
+        //     Unmoderated: s.unmdorated
+        //   });
+        // }
+        barData.push({
+          Language: config.reverseLanguageCodeMap[s.targetLanguage].toUpperCase(),
+          Moderated: s.moderated,
+          Unmoderated: s.unmdorated
+        });
+      })
+    }
     return(
       <>
       <PageTitle title="Dashboard"/>
@@ -189,22 +223,6 @@ class Dashboard extends React.Component{
                 className={classes.progress}
               />
             </div>
-            {/* <div>
-              <Typography
-                size="md"
-                color="text"
-                colorBrightness="secondary"
-                className={classes.progressSectionTitle}
-              >
-                Efficiency (77%)
-              </Typography>
-              <LinearProgress
-                variant="determinate"
-                value={77}
-                classes={{ barColorPrimary: classes.progressBar }}
-                className={classes.progress}
-              />
-            </div> */}
           </Widget>
         </Grid>
         <Grid item lg={4} md={4} sm={6} xs={12}>
@@ -260,7 +278,7 @@ class Dashboard extends React.Component{
                   color="text"
                   colorBrightness="secondary"
                 >
-                  Strings Graph with Language wise
+                  Strings graph with language wise
                 </Typography>
                 <div className={classes.mainChartHeaderLabels}>
                   <div className={classes.mainChartHeaderLabel}>
@@ -281,7 +299,18 @@ class Dashboard extends React.Component{
           >
 
             <ResponsiveContainer width="100%" minWidth={500} height={350}>
-              <ComposedChart
+              {barData && barData.length > 0 ? (
+                <BarChart data={barData}>
+                  <XAxis dataKey="Language" tickLine={false} />
+                  <YAxis axisLine={false} tickSize={3} tickLine={false} tick={{ stroke: 'none' }} />
+                  <CartesianGrid vertical={false} strokeDasharray="2 2" />
+                  <CartesianAxis />
+                  <Tooltip />
+                  <Bar dataKey="Moderated" fill={theme.palette.warning.main} />
+                  <Bar dataKey="Unmoderated" fill={theme.palette.primary.main} />
+                </BarChart>
+              ):(<p>No data found</p>)}
+              {/* <ComposedChart
                 margin={{ top: 0, right: -15, left: -15, bottom: 0 }}
                 data={mainChartData}
               >
@@ -316,7 +345,7 @@ class Dashboard extends React.Component{
                     fill: theme.palette.warning.main,
                   }}
                 />
-              </ComposedChart>
+              </ComposedChart> */}
             </ResponsiveContainer>
           </Widget>
         </Grid>
@@ -381,9 +410,11 @@ const DashboardConatiner = connect(
     error: state.get('auth').error,
     loading: state.get('auth').loading,
     user: state.get('auth').user,
+    stringsCount: state.get('dashboard').stringsCount
   }),
   dispatch => ({
-    authReducer: authReducer.getActions(dispatch)
+    authReducer: authReducer.getActions(dispatch),
+    dashboardReducer: dashboardReducer.getActions(dispatch)
   })
 )(Dashboard);
 

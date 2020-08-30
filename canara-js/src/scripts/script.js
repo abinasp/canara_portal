@@ -42,8 +42,13 @@ function createTree(){
     return {texts, currentNodeArr};
 }
 
+let revLang = localStorage.getItem("rev_langauge");
+if(revLang){
+    getTranslations();
+}
+
 async function getTranslations(){
-    $("#rev-loader").show();
+    document.getElementById("rev-loader").style.display = "block";
     let language = localStorage.getItem("rev_langauge");
     if(!language){
         return alert("Please select a language")
@@ -71,5 +76,5 @@ async function getTranslations(){
             }
         }
     }
-    $("#rev-loader").hide();
+    document.getElementById("rev-loader").style.display = "none";
 }
