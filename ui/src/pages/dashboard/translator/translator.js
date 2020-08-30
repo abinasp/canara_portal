@@ -207,10 +207,10 @@ class TranslatorDashboard extends React.Component {
     translationReducer.handleStringSave([editedString]).then(res=>{
       this.getStrings();
       this.setState({ open: false })
-      if(res.status === 1){
+      if(res && res.status === 1){
         toastr.success('Transalation has been saved');
       }else{
-        toastr.warning(res.message);
+        toastr.warning("Error in saving string");
       }
     })
   }
@@ -224,7 +224,7 @@ class TranslatorDashboard extends React.Component {
     const { translationReducer } = this.props;
     translationReducer.handleStringSave(newEditedStrings).then(res=>{
       this.getStrings();
-      if(res.status === 1){
+      if(res && res.status === 1){
         toastr.success('Transalation has been saved');
         this.setState({ rowSelected: [] });
       }

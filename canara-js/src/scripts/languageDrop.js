@@ -38,7 +38,39 @@ let style_string = `
 
 /*Basic reset*/
 * {margin: 0; padding: 0;}
+#rev-loader {
+    position:fixed;
+    width:100%;
+    left:0;right:0;top:0;bottom:0;
+    background-color: rgba(255,255,255,0.7);
+    z-index:9999;
+    display:none;
+}
 
+@-webkit-keyframes spin {
+	from {-webkit-transform:rotate(0deg);}
+	to {-webkit-transform:rotate(360deg);}
+}
+
+@keyframes spin {
+	from {transform:rotate(0deg);}
+	to {transform:rotate(360deg);}
+}
+
+#rev-loader::after {
+    content:'';
+    display:block;
+    position:absolute;
+    left:48%;top:40%;
+    width:40px;height:40px;
+    border-style:solid;
+    border-color:black;
+    border-top-color:transparent;
+    border-width: 4px;
+    border-radius:50%;
+    -webkit-animation: spin .8s linear infinite;
+    animation: spin .8s linear infinite;
+}
 
 #revLang {
 	background: #004050;
@@ -140,7 +172,7 @@ let ui_widget = `
 			<li value="hindi"><a href="#" class="reverie_drop_down_vals" id="dd_val_keyboard">Hindi</a></li>
             <li value="gujarati"><a href="#" class="reverie_drop_down_vals" id="dd_val_phonetic">Gujarati</a></li>
             <li value="marathi"><a href="#" class="reverie_drop_down_vals" id="dd_val_english">Marathi</a></li>
-            <li value="odia"><a href="#" class="reverie_drop_down_vals" id="dd_val_phonetic">Oriya</a></li>
+            <li value="odia"><a href="#" class="reverie_drop_down_vals" id="dd_val_phonetic">Odia</a></li>
             <li value="assamese"><a href="#" class="reverie_drop_down_vals" id="dd_val_english">Assamese</a></li>
 			<li value="bengali"><a href="#" class="reverie_drop_down_vals" id="dd_val_keyboard">Bengali</a></li>
             <li value="kannada"><a href="#" class="reverie_drop_down_vals" id="dd_val_phonetic">Kannada</a></li>
@@ -154,6 +186,9 @@ let ui_widget = `
 
 document.head.innerHTML = document.head.innerHTML + style_string;
 document.body.innerHTML = document.body.innerHTML + ui_widget;
+let loaderDiv = document.createElement("div");
+loaderDiv.setAttribute("id","rev-loader");
+document.body.appendChild(loaderDiv);
 
 
 
