@@ -24,7 +24,7 @@
             "apikey" : "d9dd6027-2c5f-4f87-9f4f-bfd21b87a26d",
             "createdAt" : 1591697989874.0,
             "updateAt" : 1591697989874.0
-            
+        ```   
 - Admin username:- ```canara@admin``` and password:- ```canara@123```.
 - Then run ```yarn watch``` or ```npm watch```. It should serve in 8001 port.
 - Go to ```ui``` folder and run command ```yarn``` or ```npm install```.
