@@ -71,7 +71,7 @@ async function getTranslations(){
     if(final && final.responseList && final.responseList.length>0){
         for(let i=0;i<currentNodeArr.length;i++){
             let trimSource = currentNodeArr[i].nodeValue.trim();
-            let filteredNode = final.responseList.filter(n=>n.inString===currentNodeArr[i].parentNode.getAttribute("reverie-data-source"));
+            let filteredNode = final.responseList.filter(n=>currentNodeArr[i].parentNode && n.inString===currentNodeArr[i].parentNode.getAttribute("reverie-data-source"));
             if(filteredNode && filteredNode.length>0){
                 currentNodeArr[i].nodeValue = currentNodeArr[i].nodeValue.replace(trimSource, filteredNode[0].outString);
             }

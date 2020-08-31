@@ -2,7 +2,7 @@
 .vscode/
 
 # Enviornment variables
-.env
+# .env
 
 
 # Dependency directories
