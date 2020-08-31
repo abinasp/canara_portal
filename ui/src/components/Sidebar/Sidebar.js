@@ -1,26 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Drawer, IconButton, List } from "@material-ui/core";
 import {
-  Home as HomeIcon,
-  NotificationsNone as NotificationsIcon,
-  FormatSize as TypographyIcon,
-  FilterNone as UIElementsIcon,
-  BorderAll as TableIcon,
-  QuestionAnswer as SupportIcon,
-  LibraryBooks as LibraryIcon,
-  HelpOutline as FAQIcon,
   ArrowBack as ArrowBackIcon,
 } from "@material-ui/icons";
 import DashboardIcon from '@material-ui/icons/Dashboard';
-import SettingsIcon from '@material-ui/icons/Settings';
-import TimelineIcon from '@material-ui/icons/Timeline';
-import GroupIcon from '@material-ui/icons/Group';
 import { useTheme } from "@material-ui/styles";
 import { withRouter } from "react-router-dom";
 import classNames from "classnames";
-
+import TranslateIcon from '@material-ui/icons/Translate';
 // styles
 import useStyles from "./styles";
+import GroupIcon from '@material-ui/icons/Group';
 
 // components
 import SidebarLink from "./components/SidebarLink/SidebarLink";
@@ -46,12 +36,12 @@ const structure = [
     link: "/app/users", 
     icon: <GroupIcon /> 
   },
-  {
-    id: 2,
-    label: "Transation Stats",
-    link: "/app/translations",
-    icon: <TableIcon />,
-  }
+  // {
+  //   id: 2,
+  //   label: "Transation Stats",
+  //   link: "/app/translations",
+  //   icon: <TranslateIcon />,
+  // }
 ];
 
 function Sidebar({ location }) {

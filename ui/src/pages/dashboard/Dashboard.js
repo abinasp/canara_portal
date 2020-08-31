@@ -1,24 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import {
-  Grid,
-  LinearProgress,
-  Select,
-  OutlinedInput,
-  MenuItem,
+  Grid
 } from "@material-ui/core";
 
 import { withStyles } from '@material-ui/core/styles';
+import TranslateIcon from '@material-ui/icons/Translate';
+import GroupIcon from '@material-ui/icons/Group';
 import { connect } from "react-redux";
 import {
   ResponsiveContainer,
-  ComposedChart,
-  AreaChart,
   LineChart,
   Line,
-  Area,
-  PieChart,
-  Pie,
-  Cell,
   YAxis,
   XAxis,
   BarChart,
@@ -28,7 +20,6 @@ import {
   Bar
 } from "recharts";
 
-import AdminDashboard from './admin/admin';
 import TranslatorDashboard from './translator/translator';
 
 
@@ -43,16 +34,10 @@ import { Typography } from "../../components/Wrappers";
 import Dot from "../../components/Sidebar/components/Dot";
 
 import config from "../../config";
+import UserLists from "./admin/userlists";
+import StringsList from "./admin/strings";
 import authReducer  from "../../redux/modules/auth";
 import dashboardReducer from "../../redux/modules/dashboard";
-
-const mainChartData = getMainChartData();
-const PieChartData = [
-  { name: "Confirmed", value: 400, color: "primary" },
-  { name: "Unconfirmed", value: 300, color: "secondary" },
-  { name: "Machine", value: 300, color: "warning" },
-  { name: "Translated", value: 200, color: "success" },
-];
 
 class Dashboard extends React.Component{
   constructor(props){
@@ -86,11 +71,17 @@ class Dashboard extends React.Component{
   }
 
   render(){
-    const { classes, theme, user, stringsCount } = this.props;
+    const { classes, theme, user, stringsCount, userList } = this.props;
     const { mainChartState } =this.state;
     let barData = [];
+    let totalStrings= 0,
+        unStrings =0, moStrings = 0;
+
     if(stringsCount && stringsCount.length > 0){
       stringsCount.map(s=>{
+        totalStrings += (s.moderated + s.unmdorated);
+        unStrings += s.unmdorated;
+        moStrings += s.moderated;
         // if(user.role === "translator"){
         //   if(user.languages && user.languages.indexOf(s.targetLanguage) > -1){
         //     barData.push({
@@ -119,167 +110,95 @@ class Dashboard extends React.Component{
       <Grid container spacing={4}>
         {user && user.role === 'admin' && (
           <>
-            <Grid item lg={4} md={4} sm={6} xs={12}>
-          <Widget
-            title="Total Strings"
-            upperTitle
-            bodyClass={classes.fullHeightBody}
-            className={classes.card}
-          >
-            <div className={classes.visitsNumberContainer}>
-              <Typography size="xl" weight="medium">
-                500,123
-              </Typography>
-              <LineChart
-                width={55}
-                height={30}
-                data={[
-                  { value: 10 },
-                  { value: 15 },
-                  { value: 10 },
-                  { value: 17 },
-                  { value: 18 },
-                ]}
-                margin={{ left: theme.spacing(2) }}
+            <Grid style={{ height: "200px" }} item lg={4} md={4} sm={6} xs={12}>
+              <Widget
+                title="Total strings"
+                upperTitle
+                disableWidgetMenu={true}
+                className={classes.card}
               >
-                <Line
-                  type="natural"
-                  dataKey="value"
-                  stroke={theme.palette.success.main}
-                  strokeWidth={2}
-                  dot={false}
-                />
-              </LineChart>
-            </div>
-            <Grid
-              container
-              direction="row"
-              justify="space-between"
-              alignItems="center"
-            >
-              <Grid item>
-                <Typography color="text" colorBrightness="secondary">
-                  Translated
+              <div>
+              <div style={{ float: 'left'}} className={classes.visitsNumberContainer}>
+                <Typography size="xl" weight="medium">
+                  {totalStrings}
                 </Typography>
-                <Typography size="md">496,520</Typography>
-              </Grid>
-              <Grid item>
-                <Typography color="text" colorBrightness="secondary">
-                  Pending
-                </Typography>
-                <Typography size="md">8555</Typography>
-              </Grid>
-              <Grid item>
-                <Typography color="text" colorBrightness="secondary">
-                  Efficiency
-                </Typography>
-                <Typography size="md">99.25%</Typography>
-              </Grid>
-            </Grid>
-          </Widget>
-        </Grid>
-        <Grid item lg={4} md={8} sm={6} xs={12}>
-          <Widget
-            title="API Health"
-            upperTitle
-            className={classes.card}
-            bodyClass={classes.fullHeightBody}
-          >
-            <div className={classes.performanceLegendWrapper}>
-              <div className={classes.legendElement}>
-                <Dot color="warning" />
-                <Typography
-                  color="text"
-                  colorBrightness="secondary"
-                  className={classes.legendElementText}
+                <LineChart
+                  width={55}
+                  height={30}
+                  data={[
+                    { value: 10 },
+                    { value: 15 },
+                    { value: 10 },
+                    { value: 17 },
+                    { value: 18 },
+                  ]}
+                  margin={{ left: theme.spacing(2) }}
                 >
-                  Unmoderated Strings
-                </Typography>
+                  <Line
+                    type="natural"
+                    dataKey="value"
+                    stroke={theme.palette.success.main}
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                </LineChart>
               </div>
-              <div className={classes.legendElement}>
-                <Dot color="primary" />
-                <Typography
-                  color="text"
-                  colorBrightness="secondary"
-                  className={classes.legendElementText}
-                >
-                  Moderated Strings
-                </Typography>
+              <div style={{ float: 'right' }}>
+                <TranslateIcon color="primary" style={{ fontSize: '48px' }} />
               </div>
-            </div>
-            <div className={classes.progressSection}>
-              <Typography
-                size="md"
-                color="text"
-                colorBrightness="secondary"
-                className={classes.progressSectionTitle}
+              </div>
+              <Grid
+                container
+                direction="row"
+                justify="space-between"
+                alignItems="center"
               >
-                Efficiency (97.1%)
-              </Typography>
-              <LinearProgress
-                variant="determinate"
-                value={95}
-                classes={{ barColorPrimary: classes.progressBar }}
-                className={classes.progress}
-              />
-            </div>
-          </Widget>
-        </Grid>
-        <Grid item lg={4} md={4} sm={6} xs={12}>
-          <Widget title="Wordcounts" upperTitle className={classes.card}>
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <ResponsiveContainer width="100%" height={144}>
-                  <PieChart margin={{ left: theme.spacing(2) }}>
-                    <Pie
-                      data={PieChartData}
-                      innerRadius={45}
-                      outerRadius={60}
-                      dataKey="value"
-                    >
-                      {PieChartData.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={theme.palette[entry.color].main}
-                        />
-                      ))}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
+                <Grid item>
+                  <Typography color="text" colorBrightness="secondary">
+                    Moderated
+                  </Typography>
+                  <Typography size="md">{moStrings}</Typography>
+                </Grid>
+                <Grid item>
+                  <Typography color="text" colorBrightness="secondary">
+                    Unmoderated
+                  </Typography>
+                  <Typography size="md">{unStrings}</Typography>
+                </Grid>
+                <Grid item>
+                  {/* <Typography color="text" colorBrightness="secondary">
+                    Efficiency
+                  </Typography>
+                  <Typography size="md">99.25%</Typography> */}
+                </Grid>
               </Grid>
-              <Grid item xs={6}>
-                <div className={classes.pieChartLegendWrapper}>
-                  {PieChartData.map(({ name, value, color }, index) => (
-                    <div key={color} className={classes.legendItemContainer}>
-                      <Dot color={color} />
-                      <Typography style={{ whiteSpace: "nowrap" }}>
-                        &nbsp;{name}&nbsp;
-                      </Typography>
-                      <Typography color="text" colorBrightness="secondary">
-                        &nbsp;{value}
-                      </Typography>
-                    </div>
-                  ))}
+            </Widget>
+              <Widget
+                title="Total users"
+                upperTitle
+                flag="users-wrapper"
+                disableWidgetMenu={true}
+                className={classes.card}
+                >
+                <div>
+                  <div style={{ float: 'left' }} className={classes.visitsNumberContainer}>
+                    <Typography size="xl" weight="medium">
+                      {userList.length}
+                    </Typography>
+                  </div>
+                  <div style={{ float: 'right' }}>
+                    <GroupIcon color="primary" style={{ fontSize: '48px' }} />
+                  </div>
                 </div>
-              </Grid>
-            </Grid>
-          </Widget>
-        </Grid>
-                
+              </Widget>
+            </Grid>        
         </>
         )}
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <Widget
             bodyClass={classes.mainChartBody}
             header={
-              <div className={classes.mainChartHeader}>
-                <Typography
-                  variant="h5"
-                  color="text"
-                  colorBrightness="secondary"
-                >
-                  Strings graph with language wise
-                </Typography>
+              <div style={{ justifyContent: 'center'}} className={classes.mainChartHeader}>
                 <div className={classes.mainChartHeaderLabels}>
                   <div className={classes.mainChartHeaderLabel}>
                     <Dot color="warning" />
@@ -298,7 +217,7 @@ class Dashboard extends React.Component{
             }
           >
 
-            <ResponsiveContainer width="100%" minWidth={500} height={350}>
+            <ResponsiveContainer width="100%" minWidth={500} height={295}>
               {barData && barData.length > 0 ? (
                 <BarChart data={barData}>
                   <XAxis dataKey="Language" tickLine={false} />
@@ -357,6 +276,9 @@ class Dashboard extends React.Component{
         {user && user.role === 'translator' && (
           <TranslatorDashboard />
         )}
+        {user && user.role === 'admin' && (
+          <StringsList />
+        )}
         {/* {user && user.role==='admin' && (
           <AdminDashboard />
         )} */}
@@ -366,51 +288,13 @@ class Dashboard extends React.Component{
   }
 }
 
-
-// #######################################################################
-function getRandomData(length, min, max, multiplier = 10, maxDiff = 10) {
-  var array = new Array(length).fill();
-  let lastValue;
-
-  return array.map((item, index) => {
-    let randomValue = Math.floor(Math.random() * multiplier + 1);
-
-    while (
-      randomValue <= min ||
-      randomValue >= max ||
-      (lastValue && randomValue - lastValue > maxDiff)
-    ) {
-      randomValue = Math.floor(Math.random() * multiplier + 1);
-    }
-
-    lastValue = randomValue;
-
-    return { value: randomValue };
-  });
-}
-
-function getMainChartData() {
-  var resultArray = [];
-  var tablet = getRandomData(31, 3500, 6500, 7500, 1000);
-  var desktop = getRandomData(31, 1500, 7500, 7500, 1500);
-  var mobile = getRandomData(31, 1500, 7500, 7500, 1500);
-
-  for (let i = 0; i < tablet.length; i++) {
-    resultArray.push({
-      tablet: tablet[i].value,
-      desktop: desktop[i].value,
-      mobile: mobile[i].value,
-    });
-  }
-  return resultArray;
-}
-
 const DashboardConatiner = connect(
   state => ({
     error: state.get('auth').error,
     loading: state.get('auth').loading,
     user: state.get('auth').user,
-    stringsCount: state.get('dashboard').stringsCount
+    stringsCount: state.get('dashboard').stringsCount,
+    userList: state.get('auth').userLists
   }),
   dispatch => ({
     authReducer: authReducer.getActions(dispatch),

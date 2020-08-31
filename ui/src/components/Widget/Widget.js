@@ -28,7 +28,7 @@ export default function Widget({
   var [isMoreMenuOpen, setMoreMenuOpen] = useState(false);
 
   return (
-    <div className={classes.widgetWrapper}>
+    <div className={classes.widgetWrapper} style={{ marginTop: props.flag && props.flag==="users-wrapper" ? "20px" : 0}}>
       <Paper className={classes.paper} classes={{ root: classes.widgetRoot }}>
         <div className={classes.widgetHeader}>
           {header ? (

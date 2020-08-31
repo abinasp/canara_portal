@@ -45,7 +45,7 @@ function Layout(props) {
             <Switch>
               <Route path="/app/dashboard" component={Dashboard} />
               <Route path="/app/users" component={UserLists} />
-              <Route path="/app/translations" component={StringLists} />
+              {/* <Route path="/app/translations" component={StringLists} /> */}
             </Switch>
           </div>
         </>

@@ -174,7 +174,7 @@ class UserLists extends React.Component {
         </div>
         <Grid item xs={12}>
           <MUIDataTable
-            title="Translators List"
+            title="Users List"
             data={arr}
             columns={['Name', 'Username', 'Created On', 'Edit', 'Delete']}
             options={{
