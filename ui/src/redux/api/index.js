@@ -1,7 +1,7 @@
 import axios from 'axios';
-import env from '../../env';
 
-axios.defaults.baseURL = env.API_URL;
+
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 axios.interceptors.request.use((config) => {
     let accessSecret;
     accessSecret = window.localStorage.getItem('canara_auth');

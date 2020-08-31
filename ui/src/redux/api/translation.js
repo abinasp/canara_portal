@@ -1,8 +1,7 @@
 import axios from './index';
-import env from '../../env';
 
 export async function getStrings(data){
-    return axios.get(`${env.LAAS_API}`,{
+    return axios.get(`${process.env.REACT_APP_LAAS_API}`,{
         params: {
             language: data.language,
             page:data.page,
@@ -14,5 +13,5 @@ export async function getStrings(data){
 }
 
 export async function editStrings(data){
-    return axios.post(`${env.LAAS_API_EDIT}`, data);
+    return axios.post(`${process.env.REACT_APP_LAAS_API_EDIT}`, data);
 }

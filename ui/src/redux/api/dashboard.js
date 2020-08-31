@@ -1,6 +1,5 @@
 import axios from './index';
-import env from '../../env';
 
 export async function getStringsCount(){
-    return axios.get(env.LAAS_API_FOR_STRINGS);
+    return axios.get(process.env.REACT_APP_LAAS_API_FOR_STRINGS);
 }
