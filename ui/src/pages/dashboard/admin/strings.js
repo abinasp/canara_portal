@@ -122,6 +122,7 @@ class AllStrings extends React.Component {
   handleChangeRowsPerPage(e) {
     if (e && e.target) {
       const { value } = e.target;
+      const { total } = this.props;
       this.setState({ rowsPerPage: value }, () => {
         this.getStrings();
       });
@@ -340,25 +341,25 @@ class AllStrings extends React.Component {
                       onChange={this.handleSelectAll}
                     />
                   </TableCell>
-                  <TableCell padding="default" align="center" style={{ color: '#4581A8' }}>Source String</TableCell>
-                  <TableCell padding="default" align="center" style={{ color: '#4581A8' }}>Target String</TableCell>
-                  <TableCell padding="default" align="center" style={{ color: '#4581A8' }}>Target Language</TableCell>
-                  <TableCell padding="default" align="center" style={{ color: '#4581A8' }}>String Type</TableCell>
-                  <TableCell padding="default" align="center" style={{ color: '#4581A8' }}>Action</TableCell>
+                  <TableCell padding="default" style={{ color: '#4581A8' }}>Source String</TableCell>
+                  <TableCell padding="default" style={{ color: '#4581A8' }}>Target String</TableCell>
+                  <TableCell padding="default" style={{ color: '#4581A8' }}>Target Language</TableCell>
+                  <TableCell padding="default" style={{ color: '#4581A8' }}>String Type</TableCell>
+                  <TableCell padding="default" style={{ color: '#4581A8' }}>Action</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {strings && strings.map((s, i) => (
                   <TableRow key={i}>
-                    <TableCell padding="checkbox" align="center">
+                    <TableCell padding="checkbox">
                       <Checkbox
                         checked={rowSelected.indexOf(s.row_id) !== -1}
                         style={{ color: '#4581A8' }}
                         onChange={(e) => this.handleSelectRow(e, s.row_id)}
                       />
                     </TableCell>
-                    <TableCell padding="default" align="center">{s.source}</TableCell>
-                    <TableCell padding="default" align="center">
+                    <TableCell padding="default" style={{ width: "400px" }}>{s.source}</TableCell>
+                    <TableCell padding="default" style={{ width: "400px" }}>
                       <TextField
                         id={`target_${i}`}
                         value={s.target}
@@ -369,9 +370,9 @@ class AllStrings extends React.Component {
                         multiline
                       />
                     </TableCell>
-                    <TableCell padding="default" align="center">{s.targetLanguage}</TableCell>
-                    <TableCell padding="default" align="center">{s.status}</TableCell>
-                    <TableCell padding="default" align="center">
+                    <TableCell padding="default">{s.targetLanguage}</TableCell>
+                    <TableCell padding="default">{s.status}</TableCell>
+                    <TableCell padding="default">
                       <Button color="primary" variant="contained" onClick={() => this.onTargetSave(i)} >Save</Button>
                     </TableCell>
                   </TableRow>
