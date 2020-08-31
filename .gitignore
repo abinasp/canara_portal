@@ -23,6 +23,7 @@ yarn-debug.log*
 yarn-error.log*
 
 #canara-js
+/canara-js
 /canara-js/node_modules
 /canara-js/package-lock.json
 /canara-js/yarn.lock
