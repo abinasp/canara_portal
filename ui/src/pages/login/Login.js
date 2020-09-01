@@ -20,8 +20,8 @@ class Login extends React.Component{
     super(props);
     this.state={
       isLoading: false,
-      username: 'canara@admin',
-      password: 'canara@123'
+      username: '',
+      password: ''
     }
     this.handleChange = this.handleChange.bind(this);
     this.onLogin = this.onLogin.bind(this);
