@@ -1,0 +1,27 @@
+version: '3.5'
+services:
+  mongo:
+    image: mongo
+    restart: always
+    network_mode: host
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: canara
+      MONGO_INITDB_ROOT_PASSWORD: canara123
+  backend:
+    image: revgen.azurecr.io/canara-backend
+    restart: always
+    network_mode: host
+    environment:
+      SERVER_PORT: 8001
+      MONGO: mongodb://canara:canara123@localhost:27017
+      DB: canara-bank-localization
+  ui:
+    image: revgen.azurecr.io/canara-ui
+    restart: always
+    network_mode: host
+    environment:
+      PORT: 8000
+      REACT_APP_API_URL: http://localhost:8001/api/
+      REACT_APP_LAAS_API: http://172.20.1.9:8989/getUnmoderatedData
+      REACT_APP_LAAS_API_EDIT: http://172.20.1.9:8080/locman/v2/template/multiple
+      REACT_APP_LAAS_API_FOR_STRINGS: http://172.20.1.9:8989/getCount
