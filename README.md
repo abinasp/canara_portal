@@ -31,6 +31,7 @@
 - Then run ```yarn watch``` or ```npm watch```. It should serve in 8001 port.
 - Go to ```ui``` folder and run command ```yarn``` or ```npm install```.
 - After installing all the packages run ```yarn start``` or ```npm start```. It should start serving in 8000 port.
+- Refer to ```.env``` file inside the repoistory.
 
 ## Notes
 - For fetching strings we are using locman api which is ruuning in ```172.20.1.9:8989```.
