@@ -156,7 +156,7 @@ class UserLists extends React.Component {
         u.name,
         u.username,
         moment(u.createdAt).format('DD-MM-YYYY HH:MM:SS'),
-        <EditIcon style={{color: '#4581A8', cursor: 'pointer' }} onClick={()=>this.onEditUser(u)} />,
+        <EditIcon style={{color: '#1956ad', cursor: 'pointer' }} onClick={()=>this.onEditUser(u)} />,
         <DeleteIcon style={{color: 'rgb(210, 73, 18)', cursor: 'pointer' }} onClick={() => this.onDeleteUser(u)} />
       ]
     });

@@ -326,7 +326,7 @@ class AllStrings extends React.Component {
             </Grid>
             {rowSelected && rowSelected.length > 0 && (
               <div style={{ padding: '16px', backgroundColor: 'aliceblue' }}>
-                <p style={{ float: 'left', margin: '8px', fontWeight: 'bold', color: '#4581A8' }}>{rowSelected.length} Selected</p>
+                <p style={{ float: 'left', margin: '8px', fontWeight: 'bold', color: '#1956ad' }}>{rowSelected.length} Selected</p>
                 <Button style={{ float: 'right' }} variant="contained" color="primary" onClick={this.onSaveMultipleString}>Save Selected</Button>
               </div>
             )}
@@ -341,11 +341,11 @@ class AllStrings extends React.Component {
                       onChange={this.handleSelectAll}
                     />
                   </TableCell>
-                  <TableCell padding="default" style={{ color: '#4581A8' }}>Source String</TableCell>
-                  <TableCell padding="default" style={{ color: '#4581A8' }}>Target String</TableCell>
-                  <TableCell padding="default" style={{ color: '#4581A8' }}>Target Language</TableCell>
-                  <TableCell padding="default" style={{ color: '#4581A8' }}>String Type</TableCell>
-                  <TableCell padding="default" style={{ color: '#4581A8' }}>Action</TableCell>
+                  <TableCell padding="default" style={{ color: '#1956ad' }}>Source String</TableCell>
+                  <TableCell padding="default" style={{ color: '#1956ad' }}>Target String</TableCell>
+                  <TableCell padding="default" style={{ color: '#1956ad' }}>Target Language</TableCell>
+                  <TableCell padding="default" style={{ color: '#1956ad' }}>String Type</TableCell>
+                  <TableCell padding="default" style={{ color: '#1956ad' }}>Action</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -354,7 +354,7 @@ class AllStrings extends React.Component {
                     <TableCell padding="checkbox">
                       <Checkbox
                         checked={rowSelected.indexOf(s.row_id) !== -1}
-                        style={{ color: '#4581A8' }}
+                        style={{ color: '#1956ad' }}
                         onChange={(e) => this.handleSelectRow(e, s.row_id)}
                       />
                     </TableCell>

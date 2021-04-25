@@ -121,7 +121,7 @@ export default class CRUDUser extends React.Component{
                   )}
                   <div style={{ margin: '8px' }}>
                     <FormControlLabel 
-                      control={<Checkbox style={{ color: '#4581A8', marginRight: '4px', padding: '0' }} checked={this.state.isLanguageChecked} onChange={this.languageAllChange}/>}
+                      control={<Checkbox style={{ color: '#1956ad', marginRight: '4px', padding: '0' }} checked={this.state.isLanguageChecked} onChange={this.languageAllChange}/>}
                       label="Select All Languages"
                     />
                   </div>
