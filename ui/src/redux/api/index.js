@@ -4,7 +4,7 @@ import axios from 'axios';
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 axios.interceptors.request.use((config) => {
     let accessSecret;
-    accessSecret = window.localStorage.getItem('canara_auth');
+    accessSecret = window.localStorage.getItem('rbi_auth');
     if (accessSecret !== null || accessSecret !== undefined) {
       config.headers.access_token = accessSecret;
       config.headers.timezone = Date.now();

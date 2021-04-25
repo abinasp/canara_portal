@@ -14,7 +14,7 @@ export default function Error() {
     <Grid container className={classes.container}>
       <div className={classes.logotype}>
         <Typography variant="h3" color="white" className={classes.logotypeText}>
-          Canara Bank Localization
+          RBI Localization solution
         </Typography>
       </div>
       <Paper classes={{ root: classes.paperRoot }}>

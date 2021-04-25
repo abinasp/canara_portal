@@ -59,7 +59,7 @@ class Login extends React.Component{
     return(
       <Grid container className={classes.container}>
         <div className={classes.logotypeContainer}>
-          <Typography className={classes.logotypeText}>Canara bank Localization</Typography>
+          <Typography className={classes.logotypeText}>RBI Localization solution</Typography>
         </div>
         <div className={classes.formContainer}>
         <div className={classes.form}>

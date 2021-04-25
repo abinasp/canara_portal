@@ -13,6 +13,6 @@ export async function getStrings(data){
 }
 
 export async function editStrings(data){
-    data["REV-API-KEY"] = process.env.REACT_APP_CANARA_API_KEY;
+    data["REV-API-KEY"] = process.env.REACT_APP_RBI_API_KEY;
     return axios.post(`${process.env.REACT_APP_LAAS_API_EDIT}`, data);
 }

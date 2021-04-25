@@ -69,7 +69,7 @@ function Header(props) {
           </IconButton>
         )}
         <Typography variant="h6" weight="medium" className={classes.logotype}>
-          Canara Bank Localization
+          RBI Localization solution
         </Typography>
         <div className={classes.grow} />
         <IconButton
@@ -92,15 +92,15 @@ function Header(props) {
         >
           <div className={classes.profileMenuUser}>
             <Typography variant="h4" weight="medium">
-              {props.user && props.user.name ? props.user.name : 'Canara User'}
+              {props.user && props.user.name ? props.user.name : 'RBI User'}
             </Typography>
             <Typography
               className={classes.profileMenuLink}
               component="a"
               color="primary"
-              href="https://canarabank.com/"
+              href="https://rbi.org.in"
             >
-              Canara Bank
+              RBI Bank
             </Typography>
           </div>
           <div className={classes.profileMenuUser}>

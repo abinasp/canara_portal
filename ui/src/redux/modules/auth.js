@@ -28,7 +28,7 @@ reducerFactory.addAction('LOGIN', 'login',
     }, (state, action) =>{
         const newState = Object.assign({}, state);
         if(action.data.success){
-            window.localStorage.setItem('canara_auth', action.data.data.auth);
+            window.localStorage.setItem('rbi_auth', action.data.data.auth);
             newState.user = action.data.data.user;
         }else{
             toastr.error(action.data.error);
@@ -61,7 +61,7 @@ reducerFactory.addAction('CHECK_AUTH_API', 'checkApi',
     }, (state,action) => {
         const newState = Object.assign({}, state);
         if(action.data && action.data.success){
-            window.localStorage.setItem('canara_auth', action.data.data.auth);
+            window.localStorage.setItem('rbi_auth', action.data.data.auth);
             newState.user = action.data.data.user;
         }
         newState.loading = false;

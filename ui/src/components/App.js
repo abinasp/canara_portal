@@ -12,7 +12,7 @@ import Login from "../pages/login";
 import authReducer from "../redux/modules/auth";
 
 function App(props) {
-  const isAuthenticated = window.localStorage.getItem('canara_auth');
+  const isAuthenticated = window.localStorage.getItem('rbi_auth');
   
   return (
     <HashRouter>
