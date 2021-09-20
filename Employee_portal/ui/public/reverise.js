@@ -36,31 +36,31 @@ function reverise() {
 
     let g_language = "english";
     let style_string = `
-<style>
-#rev-loader {
-    position:fixed;
-    width:100%;
-    left:0;right:0;top:0;bottom:0;
-    background-color: rgba(255,255,255,0.7);
-    z-index:9999;
-    display:none;
-}
-#rev-loader::after {
-    content:'';
-    display:block;
-    position:absolute;
-    left:48%;
-    top:40%;
-    width:40px;height:40px;
-    border-style:solid;
-    border-color:black;
-    border-top-color:transparent;
-    border-width: 4px;
-    border-radius:50%;
-    -webkit-animation: spin .8s linear infinite;
-    animation: spin .8s linear infinite;
-}
-</style>
+    <style>
+    #rev-loader {
+        position:fixed;
+        width:100%;
+        left:0;right:0;top:0;bottom:0;
+        background-color: rgba(255,255,255,0.7);
+        z-index:9999;
+        display:none;
+    }
+    #rev-loader::after {
+        content:'';
+        display:block;
+        position:absolute;
+        left:48%;
+        top:40%;
+        width:40px;height:40px;
+        border-style:solid;
+        border-color:black;
+        border-top-color:transparent;
+        border-width: 4px;
+        border-radius:50%;
+        -webkit-animation: spin .8s linear infinite;
+        animation: spin .8s linear infinite;
+    }
+    </style>
 `
     document.head.innerHTML = document.head.innerHTML + style_string;
     let loaderDiv = document.createElement("div");
@@ -318,4 +318,4 @@ function reverise() {
     }
 }
 
-reverise()
+window.onload = reverise;
